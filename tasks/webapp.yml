@@ -1,0 +1,31 @@
+---
+# deploy one webapp
+- include_vars: webapp.yml
+
+- name: copy git dir
+  git:
+    depth: 1
+    dest: '{{ webapp.gitdst }}'
+    repo: '{{ webapp.gitsrc }}'
+  when: '"gitsrc" in onewebapp and "gitdst" in onewebapp'
+
+- name: chown git dest
+  file:
+    state: directory
+    user: root
+    group: '{{ tomcat_group }}'
+    mode: g+r,o-rwx
+    recursive: yes
+  when: '"gitdst" in onewebapp'
+
+# task for each webapp
+- name: install war file
+  copy:
+    src: '{{ webapp.war }}'
+    dst: '{{ tomcat_webapps_dir }}'
+    group: '{{ tomcat_group }}'
+    mode: '0640'
+
+- name: webapp script
+  command: '{{ webapp.gitdst }}/{{ webapp.script }}'
+

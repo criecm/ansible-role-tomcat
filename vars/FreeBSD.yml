@@ -1,0 +1,7 @@
+---
+tomcat_config_dir: /usr/local/apache-tomcat-8.0/conf
+tomcat_lib_dir: /usr/local/apache-tomcat-8.0/lib
+tomcat_webapps_dir: /usr/local/apache-tomcat-8.0/webapps
+tomcat_jre_dir: /usr/local/openjdk8-jre
+tomcat_user: tomcat
+tomcat_group: tomcat

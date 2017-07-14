@@ -1,0 +1,18 @@
+---
+# webapp default vars
+
+# format:
+# tomcat_webapps:
+#   name1:                              # mandatory
+#      war: files/app.war               # mandatory
+#      gitsrc: git:...
+#      gitdst: /etc/webapp
+#      script: 'installe.sh {{ tomcat_webapps_dir }}'
+default_webapp:
+  name: '{{ onewebapp.key }}'
+  war: ''
+  gitsrc: ''
+  gitdst: ''
+  script: ''
+
+webapp: '{{ default_webapp | combine(onewebapp) }}'

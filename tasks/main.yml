@@ -1,0 +1,65 @@
+---
+
+- include_vars: '{{ ansible_os_family }}.yml'
+  tags: tomcat, vars
+
+- include: '{{ ansible_os_family }}.yml'
+  tags: tomcat, pkg
+
+# keystore
+- name: copy keystore
+  copy:
+    src: '{{ keystore }}'
+    dest: '/etc/ssl/{{ keystore }}'
+  when: keystore != ''
+  notify: restart tomcat
+  tags: tomcat, ssl
+
+# configs
+- name: get jars
+  get_url:
+    url: '{{ item }}'
+    dest: '{{ tomcat_lib_dir }}/{{ item | regex_replace(".*/","") }}'
+  with_items:
+    - 'http://repo1.maven.org/maven2/de/javakaffee/msm/memcached-session-manager/{{ memcached_session_manager_version }}/memcached-session-manager-{{ memcached_session_manager_version }}.jar'
+    - 'http://repo1.maven.org/maven2/de/javakaffee/msm/memcached-session-manager-tc8/{{ memcached_session_manager_version }}/memcached-session-manager-tc8-{{ memcached_session_manager_version }}.jar'
+    - 'http://repo1.maven.org/maven2/net/spy/spymemcached/{{ spymemcached_version }}/spymemcached-{{ spymemcached_version }}.jar'
+  when: memcached_nodes != ""
+  tags: tomcat, config
+
+- name: config context.xml / Manager element
+  template:
+    src: context.xml.j2
+    dest: '{{ tomcat_config_dir }}/context.xml'
+    owner: root
+    group: '{{ tomcat_group }}'
+    mode: '0640'
+  notify: restart tomcat
+  tags: tomcat, config
+
+- name: config server.xml
+  template:
+    src: server.xml.j2
+    dest: '{{ tomcat_config_dir }}/server.xml'
+    owner: root
+    group: '{{ tomcat_group }}'
+    mode: '0640' 
+  notify: restart tomcat
+  tags: tomcat, config
+
+- name: logging.properties
+  template:
+    src: logging.properties.j2
+    dest: '{{ tomcat_config_dir }}/logging.properties'
+    owner: root
+    group: '{{ tomcat_group }}'
+    mode: '0640'
+  notify: restart tomcat
+  tags: tomcat, config
+
+- name: deploy tomcat_webapps
+  include: webapp.yml
+  with_items: '{{ tomcat_webapps }}'
+  loop_control:
+    loop_var: onewebapp
+  tags: tomcat, webapps
