@@ -3,7 +3,7 @@
 - include_vars: '{{ ansible_os_family }}.yml'
   tags: tomcat, vars
 
-- include: '{{ ansible_os_family }}.yml'
+- include_tasks: '{{ ansible_os_family }}.yml'
   tags: tomcat, pkg
 
 # keystore
@@ -67,7 +67,7 @@
   tags: tomcat, config
 
 - name: deploy tomcat_webapps
-  include: webapp.yml
+  include_tasks: webapp.yml
   with_items: '{{ tomcat_webapps }}'
   loop_control:
     loop_var: onewebapp
