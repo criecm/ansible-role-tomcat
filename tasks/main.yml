@@ -9,9 +9,9 @@
 # keystore
 - name: copy keystore
   copy:
-    src: '{{ keystore }}'
-    dest: '/etc/ssl/{{ keystore }}'
-  when: keystore != ''
+    src: '{{ tomcat_keystore }}'
+    dest: '/etc/ssl/{{ tomcat_keystore | regex_replace(".*/","") }}'
+  when: tomcat_keystore != ''
   notify: restart tomcat
   tags: tomcat, ssl
 
@@ -45,6 +45,15 @@
     group: '{{ tomcat_group }}'
     mode: '0640' 
   notify: restart tomcat
+  tags: tomcat, config
+
+- name: config catalina.properties
+  lineinfile:
+    dest: '{{ tomcat_config_dir }}/catalina.properties'
+    line: '{{ line.key }}={{ line.value }}'
+    regexp: '^{{ line.key }}'
+  with_items: '{{ tomcat_catalina_props }}'
+  when: tomcat_catalina_props
   tags: tomcat, config
 
 - name: logging.properties

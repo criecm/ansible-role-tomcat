@@ -3,6 +3,7 @@ tomcat_config_dir: /etc/tomcat8
 tomcat_lib_dir: /var/lib/tomcat8/lib
 tomcat_log_dir: /var/log/tomcat8
 tomcat_webapps_dir: /var/lib/tomcat8/webapps
+tomcat_work_dir: /var/cache/tomcat8/work
 tomcat_jre_dir: /usr/lib/jvm/java-8-openjdk-amd64/jre
 tomcat_user: tomcat8
 tomcat_group: tomcat8

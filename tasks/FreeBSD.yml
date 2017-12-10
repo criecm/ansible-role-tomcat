@@ -26,7 +26,7 @@
 
 - name: mkdir
   file:
-    path: /var/log/tomcat
+    path: '{{ tomcat_log_dir }}'
     state: directory
     group: '{{ tomcat_group }}'
     mode: '0770'
@@ -47,8 +47,9 @@
     owner: '{{ tomcat_user }}'
     recurse: yes
   with_items:
-    - /var/log/tomcat
+    - '{{ tomcat_log_dir }}'
     - '{{ tomcat_webapps_dir }}'
+    - '{{ tomcat_work_dir }}'
 
 - name: newsyslog
   template:
@@ -65,7 +66,7 @@
       tomcat8_catalina_user: '{{ tomcat_user }}'
       tomcat8_stdout: '{{ tomcat_log_dir }}/catalina.out'
       tomcat8_stderr: '{{ tomcat_log_dir }}/catalina.err'
-      tomcat8_java_opts: "{{ tomcat_java_opts }}{% if keystore != '' %} -Djavax.net.ssl.trustStore=/etc/ssl/{{ keystore }} -Djavax.net.ssl.trustStorePassword='{{ storepass }}'{% endif %}"
+      tomcat8_java_opts: "{{ tomcat_java_opts }}{% if tomcat_keystore != '' %} -Djavax.net.ssl.trustStore=/etc/ssl/{{ tomcat_keystore | regex_replace('.*/','') }} -Djavax.net.ssl.trustStorePassword='{{ tomcat_storepass }}'{% endif %}"
       tomcat8_java_home: '{{ tomcat_jre_dir }}'
       tomcat8_classpath: "{% if classpath_adds != '' %}:{{ classpath_adds }}{% endif %}"
       tomcat8_tmp_dir: "{% if tomcat_tmp_dir != '' %}{{ tomcat_tmp_dir }}{% else %}/var/tmp/{{ tomcat_service }}{% endif %}"

@@ -4,8 +4,8 @@ spymemcached_version: '2.11.1'
 memcached_nodes: []
 proxies_ips_regex: ''
 classpath_adds: ''
-keystore: ''
-storepass: ''
+tomcat_keystore: ''
+tomcat_storepass: ''
 tomcat_log_dir: /var/log/tomcat
 tomcat_service: tomcat8
 freebsd_jdk_pkg: openjdk8-jre

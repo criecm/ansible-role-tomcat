@@ -4,6 +4,8 @@
 	<WatchedResource>WEB-INF/web.xml</WatchedResource>
 	<WatchedResource>${catalina.base}/conf/web.xml</WatchedResource>
 
-	{% if memcached_nodes %}<Manager className="de.javakaffee.web.msm.MemcachedBackupSessionManager" memcachedNodes="{{ memcached_nodes }}" failoverNodes="{{ inventory_hostname }}"/>{% endif %}
+	{% if memcached_nodes %}
+	<Manager className="de.javakaffee.web.msm.MemcachedBackupSessionManager" memcachedNodes="{{ memcached_nodes }}" failoverNodes="{{ inventory_hostname }}"/>
+	{% endif %}
 
 </Context>
