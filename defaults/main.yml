@@ -1,16 +1,19 @@
 ---
 memcached_session_manager_version: '2.1.1'
 spymemcached_version: '2.11.1'
+tomcat_version: 8.0
 memcached_nodes: []
 proxies_ips_regex: ''
 classpath_adds: ''
 tomcat_keystore: ''
 tomcat_storepass: ''
 tomcat_log_dir: /var/log/tomcat
-tomcat_service: tomcat8
+tomcat_service: 'tomcat{{ tomcat_version | regex_replace("[\.0]","") }}'
 freebsd_jdk_pkg: openjdk8-jre
 debian_jdk_pkg: openjdk-8-jre
 tomcat_http_port: 8080
 tomcat_ajp_port: 8009
-tomcat_java_opts: "-Djava.awt.headless=true -Xmx256m -XX:+UseConcMarkSweepGC"
+tomcat_java_opts: "-Djava.awt.headless=true -XX:+UseConcMarkSweepGC -Xms1024m -Xmx1024m"
 tomcat_tmp_dir: /var/tmp/tomcat8
+tomcat_catalina_props: []
+tomcat_webapps: []

@@ -50,10 +50,11 @@
 - name: config catalina.properties
   lineinfile:
     dest: '{{ tomcat_config_dir }}/catalina.properties'
-    line: '{{ line.key }}={{ line.value }}'
-    regexp: '^{{ line.key }}'
+    line: '{{ line }}'
+    regexp: '^{{ line | regex_replace("=.*$","") }}'
   with_items: '{{ tomcat_catalina_props }}'
-  when: tomcat_catalina_props
+  loop_control:
+    loop_var: line
   tags: tomcat, config
 
 - name: logging.properties

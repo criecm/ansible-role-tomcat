@@ -19,7 +19,8 @@ FreeBSD & Debian, tomcat 8, jdk8, memcache sessions, remoteipvalve support
 * `tomcat_storepass` ('')
   keystore password
 * `tomcat_catalina_props` ([])
-  list of key/value items to be added/replaces in catalina.properties
+  list of lines to be added/replaced in catalina.properties
+  (will replace line matching line before '=')
 * see `defaults/main.yml` for exhaustive list
 
 ### http(s) reverse-proxy support
