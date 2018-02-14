@@ -73,3 +73,4 @@
   loop_control:
     loop_var: onewebapp
   tags: tomcat, webapps
+  notify: restart tomcat

@@ -22,10 +22,11 @@
 - name: install war file
   copy:
     src: '{{ webapp.war }}'
-    dst: '{{ tomcat_webapps_dir }}'
+    dest: '{{ tomcat_webapps_dir }}'
     group: '{{ tomcat_group }}'
     mode: '0640'
+  when: '"war" in onewebapp'
 
 - name: webapp script
   command: '{{ webapp.gitdst }}/{{ webapp.script }}'
-
+  when: '"script" in onewebapp'
