@@ -36,7 +36,7 @@
     path: '{{ item }}'
     mode: u=rwX,g=rX,o-rwx
     group: '{{ tomcat_group }}'
-    recurse: yes
+    recurse: no
   with_items:
     - '{{ tomcat_config_dir }}'
 
@@ -50,6 +50,7 @@
     - '{{ tomcat_log_dir }}'
     - '{{ tomcat_webapps_dir }}'
     - '{{ tomcat_work_dir }}'
+    - '{{ tomcat_config_dir }}/Catalina'
 
 - name: newsyslog
   template:
