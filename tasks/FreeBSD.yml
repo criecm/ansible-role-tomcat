@@ -52,6 +52,18 @@
     - '{{ tomcat_work_dir }}'
     - '{{ tomcat_config_dir }}/Catalina'
 
+- name: login.conf utf8
+  blockinfile:
+    block: |
+      tomcat:\
+            :charset=UTF-8:\
+            :lang=en_US.UTF-8:\
+            :tc=default:
+    marker: '{mark} ANSIBLE MANAGED tomcat'
+    backup: yes
+    validate: 'cap_mkdb %s'
+    notify: cap_mkdb login.conf
+
 - name: newsyslog
   template:
     src: newsyslog_tomcat.conf
