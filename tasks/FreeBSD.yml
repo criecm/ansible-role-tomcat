@@ -62,7 +62,8 @@
     marker: '{mark} ANSIBLE MANAGED tomcat'
     backup: yes
     validate: 'cap_mkdb %s'
-    notify: cap_mkdb login.conf
+    path: /etc/login.conf
+#    notify: cap_mkdb login.conf
 
 - name: newsyslog
   template:
