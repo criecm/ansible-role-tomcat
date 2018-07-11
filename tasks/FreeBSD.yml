@@ -63,7 +63,7 @@
     backup: yes
     validate: 'cap_mkdb %s'
     path: /etc/login.conf
-#    notify: cap_mkdb login.conf
+  notify: cap_mkdb login.conf
 
 - name: newsyslog
   template:
