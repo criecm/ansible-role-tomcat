@@ -54,6 +54,7 @@
     - '{{ tomcat_webapps_dir }}'
     - '{{ tomcat_work_dir }}'
     - '{{ tomcat_config_dir }}/Catalina'
+  when: do_sys
 
 - name: login.conf utf8
   blockinfile:
