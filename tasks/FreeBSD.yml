@@ -5,14 +5,16 @@
     name: '{{ item }}'
     state: present
   with_items:
-    - tomcat8
+    - tomcat{{ tomcat_version | regex_replace("[\.0]","") }}
     - '{{ freebsd_jdk_pkg }}'
     - tomcat-native
+  when: do_sys
 
 - name: tomcat group
   group:
     name: '{{ tomcat_group }}'
     state: present
+  when: do_sys
 
 - name: tomcat user
   user:
@@ -23,6 +25,7 @@
     createhome: False
     login_class: daemon
     state: present
+  when: do_sys
 
 - name: mkdir
   file:
@@ -64,24 +67,27 @@
     validate: 'cap_mkdb %s'
     path: /etc/login.conf
   notify: cap_mkdb login.conf
+  when: do_sys
 
 - name: newsyslog
   template:
     src: newsyslog_tomcat.conf
     dest: /usr/local/etc/newsyslog.conf.d/tomcat.conf
+  when: do_sys
 
 - name: enable tomcat
   lineinfile:
       dest: /etc/rc.conf
-      line: '{{ item.key }}="{{ item.value }}"'
-      regexp: '^{{ item.key }}='
+      line: 'tomcat{{ tomcat_version | regex_replace("[\.0]","") }}_{{ item.key }}="{{ item.value }}"'
+      regexp: '^tomcat{{ tomcat_version | regex_replace("[\.0]","") }}_{{ item.key }}='
   with_dict:
-      tomcat8_enable: YES
-      tomcat8_catalina_user: '{{ tomcat_user }}'
-      tomcat8_stdout: '{{ tomcat_log_dir }}/catalina.out'
-      tomcat8_stderr: '{{ tomcat_log_dir }}/catalina.err'
-      tomcat8_java_opts: "{{ tomcat_java_opts }}{% if tomcat_keystore != '' %} -Djavax.net.ssl.trustStore=/etc/ssl/{{ tomcat_keystore | regex_replace('.*/','') }} -Djavax.net.ssl.trustStorePassword='{{ tomcat_storepass }}'{% endif %}"
-      tomcat8_java_home: '{{ tomcat_jre_dir }}'
-      tomcat8_classpath: "{% if classpath_adds != '' %}:{{ classpath_adds }}{% endif %}"
-      tomcat8_tmp_dir: "{% if tomcat_tmp_dir != '' %}{{ tomcat_tmp_dir }}{% else %}/var/tmp/{{ tomcat_service }}{% endif %}"
-      tomcat8_wait: '5'
+      enable: YES
+      catalina_user: '{{ tomcat_user }}'
+      stdout: '{{ tomcat_log_dir }}/catalina.out'
+      stderr: '{{ tomcat_log_dir }}/catalina.err'
+      java_opts: "{{ tomcat_java_opts }}{% if tomcat_keystore != '' %} -Djavax.net.ssl.trustStore=/etc/ssl/{{ tomcat_keystore | regex_replace('.*/','') }} -Djavax.net.ssl.trustStorePassword='{{ tomcat_storepass }}'{% endif %}"
+      java_home: '{{ tomcat_jre_dir }}'
+      classpath: "{% if classpath_adds != '' %}:{{ classpath_adds }}{% endif %}"
+      tmp_dir: "{% if tomcat_tmp_dir != '' %}{{ tomcat_tmp_dir }}{% else %}/var/tmp/{{ tomcat_service }}{% endif %}"
+      wait: '5'
+  when: do_sys

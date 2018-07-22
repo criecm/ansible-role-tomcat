@@ -3,6 +3,9 @@
 - include_vars: '{{ ansible_os_family }}.yml'
   tags: tomcat, vars
 
+- set_fact:
+    do_sys: '{% if "criecm" in ansible_local and "tomcat" in ansible_local.criecm and ansible_local.criecm.tomcat.version | default(0) >= tomcat_role_version %}no{% else %}{{ do_sysadm | default(False) }}{% endif %}'
+
 - include_tasks: '{{ ansible_os_family }}.yml'
   tags: tomcat, pkg
 
@@ -24,7 +27,7 @@
     - 'http://repo1.maven.org/maven2/de/javakaffee/msm/memcached-session-manager/{{ memcached_session_manager_version }}/memcached-session-manager-{{ memcached_session_manager_version }}.jar'
     - 'http://repo1.maven.org/maven2/de/javakaffee/msm/memcached-session-manager-tc8/{{ memcached_session_manager_version }}/memcached-session-manager-tc8-{{ memcached_session_manager_version }}.jar'
     - 'http://repo1.maven.org/maven2/net/spy/spymemcached/{{ spymemcached_version }}/spymemcached-{{ spymemcached_version }}.jar'
-  when: memcached_nodes != ""
+  when: do_sys and memcached_nodes != ""
   tags: tomcat, config
 
 - name: config context.xml / Manager element
@@ -36,6 +39,7 @@
     mode: '0640'
   notify: restart tomcat
   tags: tomcat, config
+  when: do_sys
 
 - name: config server.xml
   template:
@@ -46,6 +50,7 @@
     mode: '0640' 
   notify: restart tomcat
   tags: tomcat, config
+  when: do_sys
 
 - name: config catalina.properties
   lineinfile:
@@ -56,6 +61,7 @@
   loop_control:
     loop_var: line
   tags: tomcat, config
+  when: do_sys
 
 - name: logging.properties
   template:
@@ -66,6 +72,7 @@
     mode: '0640'
   notify: restart tomcat
   tags: tomcat, config
+  when: do_sys
 
 - name: deploy tomcat_webapps
   include_tasks: webapp.yml
@@ -74,3 +81,14 @@
     loop_var: onewebapp
   tags: tomcat, webapps
   notify: restart tomcat
+
+- name: fact done
+  blockinfile:
+    path: '{{ etcprefix }}/etc/ansible/facts.d/criecm.fact'
+    marker: '# {mark} ANSIBLE criecm.tomcat BLOCK'
+    block: |
+      [tomcat]
+      version={{ tomcat_role_version }}
+    create: yes
+  when: do_sys
+
