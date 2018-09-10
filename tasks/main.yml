@@ -81,6 +81,7 @@
     loop_var: onewebapp
   tags: tomcat, webapps
   notify: restart tomcat
+  when: myapp = '' or myapp = onewebapp.id
 
 - name: fact done
   blockinfile:

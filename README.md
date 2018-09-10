@@ -47,9 +47,10 @@ Using https://github.com/magro/memcached-session-manager/wiki
 
 ### webapps deployment
 
-* `tomcat_webapps` is a list of dict of webapps to deploy (defaults to empty)
+* `tomcat_webapps ([])` list of dicts describing webapps to deploy
   * `key` is name
   * `war` is war file to deploy in webapps dir
   * `gitsrc` will be cloned in dir `gitdst` if both exists
   * `script` is the command line, relative to `gitdst`, to be launched (as root) user after deploying (if any)
 
+* `myapp ('')` If defined, only deploy this app (must match webapp.key)

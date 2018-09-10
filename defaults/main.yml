@@ -18,3 +18,4 @@ tomcat_tmp_dir: /var/tmp/tomcat8
 tomcat_catalina_props: []
 tomcat_webapps: []
 tomcat_role_version: 1
+myapp: ''
