@@ -80,8 +80,14 @@
   loop_control:
     loop_var: onewebapp
   tags: tomcat, webapps
-  notify: restart tomcat
-  when: myapp = '' or myapp = onewebapp.id
+  when: myapp == '' or myapp == onewebapp.key
+  register: myapps
+
+- name: ensure tomcat runs
+  service:
+    name: '{{ tomcat_service }}'
+    state: started
+  when: myapps.changed
 
 - name: fact done
   blockinfile:

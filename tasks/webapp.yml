@@ -18,6 +18,18 @@
     recursive: yes
   when: '"gitdst" in onewebapp'
 
+- name: delete old war
+  file:
+    path: '{{ tomcat_webapps_dir }}/{{ webapp.war }}'
+    state: absent
+  when: '"war" in onewebapp'
+
+- name: delete tomcat cache
+  file:
+    path: '{{ tomcat_work_dir }}/Cataline/{{ onewebapp.key }}'
+    state: absent
+    recurse: yes
+
 # task for each webapp
 - name: install war file
   copy:

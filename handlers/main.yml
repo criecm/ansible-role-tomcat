@@ -2,7 +2,7 @@
 - name: restart tomcat
   service:
     name: '{{ tomcat_service }}'
-    state: restarted
+    state: started
 
 - name: cap_mkdb login.conf
   command: 'cap_mkdb /etc/login.conf'
