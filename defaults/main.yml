@@ -8,6 +8,7 @@ classpath_adds: ''
 tomcat_keystore: ''
 tomcat_storepass: ''
 tomcat_log_dir: /var/log/tomcat
+tomcat_base_dir: /var/lib/tomcat
 tomcat_service: 'tomcat{{ tomcat_version | regex_replace("[\.0]","") }}'
 freebsd_jdk_pkg: openjdk8-jre
 debian_jdk_pkg: openjdk-8-jre

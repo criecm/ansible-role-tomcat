@@ -1,8 +1,9 @@
 ---
-tomcat_config_dir: '/usr/local/apache-tomcat-{{ tomcat_version }}/conf'
-tomcat_lib_dir: '/usr/local/apache-tomcat-{{ tomcat_version }}/lib'
-tomcat_webapps_dir: '/usr/local/apache-tomcat-{{ tomcat_version }}/webapps'
-tomcat_work_dir: '/usr/local/apache-tomcat-{{ tomcat_version }}/work'
+tomcat_base_dir: '/usr/local/apache-tomcat-{{ tomcat_version }}'
+tomcat_config_dir: '{{ tomcat_base_dir }}/conf'
+tomcat_lib_dir: '{{ tomcat_base_dir }}/lib'
+tomcat_webapps_dir: '{{ tomcat_base_dir }}/webapps'
+tomcat_work_dir: '{{ tomcat_base_dir }}/work'
 tomcat_jre_dir: '/usr/local/openjdk8-jre'
 tomcat_user: www
 tomcat_group: www
