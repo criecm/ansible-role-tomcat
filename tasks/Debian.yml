@@ -2,12 +2,11 @@
 
 - name: install java & tomcat
   apt:
-    name: '{{ item }}'
+    name:
+      - tomcat8
+      - '{{ debian_jdk_pkg }}'
+      - libtcnative-1
     state: present
-  with_items:
-    - tomcat8
-    - '{{ debian_jdk_pkg }}'
-    - libtcnative-1
   when: do_sys
 
 - name: tomcat group

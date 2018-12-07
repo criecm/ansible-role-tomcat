@@ -2,12 +2,11 @@
 
 - name: install java & tomcat
   pkgng:
-    name: '{{ item }}'
+    name:
+      - tomcat{{ tomcat_version | regex_replace("[\.0]","") }}
+      - '{{ freebsd_jdk_pkg }}'
+      - tomcat-native
     state: present
-  with_items:
-    - tomcat{{ tomcat_version | regex_replace("[\.0]","") }}
-    - '{{ freebsd_jdk_pkg }}'
-    - tomcat-native
   when: do_sys
 
 - name: tomcat group
