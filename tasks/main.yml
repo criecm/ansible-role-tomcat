@@ -9,6 +9,14 @@
 - include_tasks: '{{ ansible_os_family }}.yml'
   tags: tomcat, pkg
 
+# memcached if needed
+- name: enable memcached
+  service:
+    name: memcached
+    state: started
+    enabled: yes
+  when: memcached_nodes is search(ansible_hostname) or memcached_nodes is search("localhost")
+
 # keystore
 - name: copy keystore
   copy:
@@ -19,7 +27,7 @@
   tags: tomcat, ssl
 
 # configs
-- name: get jars
+- name: get memcache jars
   get_url:
     url: '{{ item }}'
     dest: '{{ tomcat_lib_dir }}/{{ item | regex_replace(".*/","") }}'
