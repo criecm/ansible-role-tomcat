@@ -1,12 +1,14 @@
 ---
-
-- include_vars: '{{ ansible_os_family }}.yml'
+- name: OS vars
+  include_vars: '{{ ansible_os_family }}.yml'
   tags: tomcat, vars
 
-- set_fact:
+- name: do_sys or not
+  set_fact:
     do_sys: '{% if "criecm" in ansible_local and "tomcat" in ansible_local.criecm and ansible_local.criecm.tomcat.version | default(0) | int >= tomcat_role_version and not do_sysadm | default(False) %}no{% else %}yes{% endif %}'
 
-- include_tasks: '{{ ansible_os_family }}.yml'
+- name: OS tasks
+  include_tasks: '{{ ansible_os_family }}.yml'
   tags: tomcat, pkg
 
 # memcached if needed
@@ -55,7 +57,7 @@
     dest: '{{ tomcat_config_dir }}/server.xml'
     owner: root
     group: '{{ tomcat_group }}'
-    mode: '0640' 
+    mode: '0640'
   notify: restart tomcat
   tags: tomcat, config
   when: do_sys
@@ -96,6 +98,8 @@
     name: '{{ tomcat_service }}'
     state: started
   when: myapps.changed
+  tags:
+    - skip_ansible_lint
 
 - name: fact done
   blockinfile:
