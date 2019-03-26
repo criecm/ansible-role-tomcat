@@ -1,6 +1,6 @@
 ---
-memcached_session_manager_version: '2.1.1'
-spymemcached_version: '2.11.1'
+memcached_session_manager_version: '2.3.2'
+spymemcached_version: '2.12.3'
 tomcat_version: 8.0
 memcached_nodes: ''
 proxies_ips_regex: ''

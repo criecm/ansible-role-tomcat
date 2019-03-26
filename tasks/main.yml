@@ -28,6 +28,25 @@
   notify: restart tomcat
   tags: tomcat, ssl
 
+# tls dir
+- name: tls dir
+  file:
+    path: '{{ tomcat_config_dir }}/tls'
+    state: directory
+    mode: '0750'
+    group: '{{ tomcat_group }}'
+  when: tomcat_apr_cert != "" and tomcat_apr_key != ""
+
+# x509 keys
+- name: copy x509
+  copy:
+    src: '{{ item }}'
+    dest: '{{ tomcat_config_dir }}/tls/{{ item | basename }}'
+  loop:
+    - '{{ tomcat_apr_cert }}'
+    - '{{ tomcat_apr_key }}'
+  when: tomcat_apr_cert != "" and tomcat_apr_key != ""
+
 # configs
 - name: get memcache jars
   get_url:
@@ -49,7 +68,6 @@
     mode: '0640'
   notify: restart tomcat
   tags: tomcat, config
-  when: do_sys
 
 - name: config server.xml
   template:
@@ -60,7 +78,6 @@
     mode: '0640'
   notify: restart tomcat
   tags: tomcat, config
-  when: do_sys
 
 - name: config catalina.properties
   lineinfile:
@@ -71,7 +88,6 @@
   loop_control:
     loop_var: line
   tags: tomcat, config
-  when: do_sys
 
 - name: logging.properties
   template:
@@ -82,7 +98,6 @@
     mode: '0640'
   notify: restart tomcat
   tags: tomcat, config
-  when: do_sys
 
 - name: deploy tomcat_webapps
   include_tasks: webapp.yml
