@@ -27,7 +27,7 @@
         <Connector port="{{ tomcat_ajp_port }}" protocol="AJP/1.3" redirectPort="8443" />
 {% endif %}
 {% if tomcat_apr_port %}
-        <Connector port="{{ tomcat_apr_port | default("8443") }}" maxHttpHeaderSize="8192"
+        <Connector port="{{ tomcat_apr_port }}" maxHttpHeaderSize="8192"
                  maxThreads="150"
                  enableLookups="false" disableUploadTimeout="true"
                  acceptCount="100"

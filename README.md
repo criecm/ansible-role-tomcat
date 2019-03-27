@@ -21,13 +21,13 @@ FreeBSD & Debian, tomcat 8, jdk8, memcache sessions, remoteipvalve support
 * `tomcat_catalina_props` ([])
   list of lines to be added/replaced in catalina.properties
   (will replace line matching line before '=')
+* `tomcat_apr_port ('')`
+  if defined, on which port we should listen with APR connector
 * `tomcat_apr_cert ('')`
   If defined to an x509 cert, HTTPS support will be activated with APR support
   cert and key will be copied in tomcat config dir
 * `tomcat_apr_key ('')`
   PEM key for above cert. Mandatory if you want TLS with APR
-* `tomcat_apr_port (8443)`
-  if `tomcat_tls_cert` exists, on which port we should listen
 * see `defaults/main.yml` for exhaustive list
 
 ### http(s) reverse-proxy support
