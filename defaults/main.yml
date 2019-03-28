@@ -14,6 +14,9 @@ freebsd_jdk_pkg: openjdk8-jre
 debian_jdk_pkg: openjdk-8-jre
 tomcat_http_port: 8080
 tomcat_ajp_port: 8009
+tomcat_apr_port: ''
+tomcat_apr_cert: ''
+tomcat_apr_key: ''
 tomcat_java_opts: "-Djava.awt.headless=true -XX:+UseConcMarkSweepGC -Xms1024m -Xmx1024m"
 tomcat_tmp_dir: /var/tmp/tomcat8
 tomcat_catalina_props: []
