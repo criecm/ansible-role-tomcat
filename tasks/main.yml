@@ -54,7 +54,7 @@
     dest: '{{ tomcat_lib_dir }}/{{ item | regex_replace(".*/","") }}'
   with_items:
     - 'http://repo1.maven.org/maven2/de/javakaffee/msm/memcached-session-manager/{{ memcached_session_manager_version }}/memcached-session-manager-{{ memcached_session_manager_version }}.jar'
-    - 'http://repo1.maven.org/maven2/de/javakaffee/msm/memcached-session-manager-tc8/{{ memcached_session_manager_version }}/memcached-session-manager-tc8-{{ memcached_session_manager_version }}.jar'
+    - 'http://repo1.maven.org/maven2/de/javakaffee/msm/memcached-session-manager-tc{{ tomcat_version | regex_replace("\..*$","") }}/{{ memcached_session_manager_version }}/memcached-session-manager-tc8-{{ memcached_session_manager_version }}.jar'
     - 'http://repo1.maven.org/maven2/net/spy/spymemcached/{{ spymemcached_version }}/spymemcached-{{ spymemcached_version }}.jar'
   when: do_sys and memcached_nodes != ""
   tags: tomcat, config

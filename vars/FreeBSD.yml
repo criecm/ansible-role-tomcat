@@ -4,6 +4,6 @@ tomcat_config_dir: '{{ tomcat_base_dir }}/conf'
 tomcat_lib_dir: '{{ tomcat_base_dir }}/lib'
 tomcat_webapps_dir: '{{ tomcat_base_dir }}/webapps'
 tomcat_work_dir: '{{ tomcat_base_dir }}/work'
-tomcat_jre_dir: '/usr/local/openjdk8-jre'
+tomcat_jre_dir: '{{ jre_dir | default("/usr/local/"+freebsd_jdk_pkg) }}'
 tomcat_user: www
 tomcat_group: www

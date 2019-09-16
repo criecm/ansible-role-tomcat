@@ -18,7 +18,7 @@ tomcat_apr_port: ''
 tomcat_apr_cert: ''
 tomcat_apr_key: ''
 tomcat_java_opts: "-Djava.awt.headless=true -XX:+UseConcMarkSweepGC -Xms1024m -Xmx1024m"
-tomcat_tmp_dir: /var/tmp/tomcat8
+tomcat_tmp_dir: '/var/tmp/tomcat{{ tomcat_version | regex_replace("\..*","") }}'
 tomcat_catalina_props: []
 tomcat_webapps: []
 tomcat_role_version: 1

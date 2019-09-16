@@ -1,6 +1,6 @@
 # tomcat
 
-FreeBSD & Debian, tomcat 8, jdk8, memcache sessions, remoteipvalve support
+FreeBSD & Debian, tomcat 8/9, jdk8, memcache sessions, remoteipvalve support
 
 ## variables (default value)
 
@@ -28,6 +28,8 @@ FreeBSD & Debian, tomcat 8, jdk8, memcache sessions, remoteipvalve support
   cert and key will be copied in tomcat config dir
 * `tomcat_apr_key ('')`
   PEM key for above cert. Mandatory if you want TLS with APR
+* `jre_dir (depend on distrib)`
+  path to jre for tomcat
 * see `defaults/main.yml` for exhaustive list
 
 ### http(s) reverse-proxy support
@@ -48,7 +50,7 @@ Using https://github.com/magro/memcached-session-manager/wiki
 
 * `memcached_nodes` has to be filled as this:
 <code><pre>memcached_nodes: 'japps3:japps3.serv.int:11211,japps4:japps4.serv.int:11211'</pre></code>
-* node names (here japps3/japps4) *MUST* match inventory `ansible_hostname`
+* node names (here japps3/japps4) *MUST* match inventory `inventory_hostname`
 
 (see templates/context.xml.j2)
 
