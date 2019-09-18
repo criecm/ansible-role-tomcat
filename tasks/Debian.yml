@@ -67,6 +67,6 @@
       TOMCAT8_USER: '{{ tomcat_user }}'
       TOMCAT8_GROUP: '{{ tomcat_group }}'
       JAVA_HOME: '{{ tomcat_jre_dir }}'
-      JAVA_OPTS: "{{ tomcat_java_opts }} -Duser.timezone=Europe/Paris -Duser.country=fr -Duser.language=fr {% if tomcat_keystore != '' %}-Djavax.net.ssl.trustStore=/etc/ssl/{{ tomcat_keystore | regex_replace('.*/','') }} -Djavax.net.ssl.trustStorePassword='{{ tomcat_storepass }}'{% endif %}{% if classpath_adds != '' %} -cp {{ classpath_adds }}{% endif %}"
+      JAVA_OPTS: "{{ tomcat_java_opts }} {{ tomcat_lang_opts }}{% if tomcat_keystore != '' %} -Djavax.net.ssl.trustStore=/etc/ssl/{{ tomcat_keystore | regex_replace('.*/','') }} -Djavax.net.ssl.trustStorePassword='{{ tomcat_storepass }}'{% endif %}{% if classpath_adds != '' %} -cp {{ classpath_adds }}{% endif %}"
       JVM_TMP: '{% if tomcat_tmp_dir != "" %}{{ tomcat_tmp_dir }}{% else %}/var/tmp/{{ tomcat_service }}{% endif %}'
   when: do_sys

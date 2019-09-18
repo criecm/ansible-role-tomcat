@@ -1,4 +1,6 @@
 ---
+# upgrade this to trigger re-install
+tomcat_role_version: 2
 memcached_session_manager_version: '2.3.2'
 spymemcached_version: '2.12.3'
 tomcat_version: 8.0
@@ -21,5 +23,6 @@ tomcat_java_opts: "-Djava.awt.headless=true -XX:+UseConcMarkSweepGC -Xms1024m -X
 tomcat_tmp_dir: '/var/tmp/tomcat{{ tomcat_version | regex_replace("\..*","") }}'
 tomcat_catalina_props: []
 tomcat_webapps: []
-tomcat_role_version: 1
 myapp: ''
+#tomcat_lang_opts: '-Duser.timezone=Europe/Paris -Duser.country=fr'
+tomcat_lang_opts: ''
