@@ -4,8 +4,19 @@
 	<WatchedResource>WEB-INF/web.xml</WatchedResource>
 	<WatchedResource>${catalina.base}/conf/web.xml</WatchedResource>
 
-	{% if memcached_nodes | default(False) %}
-	<Manager className="de.javakaffee.web.msm.MemcachedBackupSessionManager" memcachedNodes="{{ memcached_nodes }}" failoverNodes="{{ inventory_hostname }}"/>
-	{% endif %}
+{% if memcached_nodes | default(False) %}
+	<!-- https://github.com/magro/memcached-session-manager/wiki/SetupAndConfiguration -->
+	<Manager className="de.javakaffee.web.msm.MemcachedBackupSessionManager"
+		memcachedNodes="{{ memcached_nodes }}"
+{%   if tomcat_memcached_sticky | default(True) %}
+		failoverNodes="{{ inventory_hostname }}"
+{%   else %}
+		lockingMode="auto"
+		sticky="false"
+		requestUriIgnorePattern=".*\.(ico|png|gif|jpg|css|js)$"
+		sessionBackupAsync="false"
+{%   endif %}
+	/>
+{% endif %}
 
 </Context>
