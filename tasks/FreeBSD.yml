@@ -7,7 +7,6 @@
       - '{{ freebsd_jdk_pkg }}'
       - tomcat-native
     state: present
-  when: do_sys
 
 - name: install memcached
   pkgng:

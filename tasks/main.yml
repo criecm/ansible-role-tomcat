@@ -48,6 +48,13 @@
   when: tomcat_apr_cert != "" and tomcat_apr_key != ""
 
 # configs
+- name: memcache jars
+  command: "ls {{ tomcat_lib_dir }}/*memcache*"
+  check_mode: False
+  changed_when: False
+  failed_when: False
+  register: libjars
+
 - name: get memcache jars
   get_url:
     url: '{{ item }}'
@@ -58,6 +65,30 @@
     - 'http://repo1.maven.org/maven2/net/spy/spymemcached/{{ spymemcached_version }}/spymemcached-{{ spymemcached_version }}.jar'
   when: memcached_nodes != ""
   tags: tomcat, config
+
+- name: clean old jars
+  block:
+    - name: spymemcached
+      file:
+        path: '{{ libjars | regex_search("spymemcached-") | regex_search("^spymemcached-(?!"+spymemcached_version+")") }}'
+        state: absent
+      when: libjars | regex_search("spymemcached-") | regex_search("^spymemcached-(?!"+spymemcached_version+")")
+        | count > 0
+    - name: memcached-session-manager-tc
+      file:
+        path: '{{ libjars | regex_search("memcached-session-manager-tc-") | regex_search("^memcached-session-manager-tc-(?!"+memcached_session_manager_version+")") }}'
+        state: absent
+      when: libjars | regex_search("memcached-session-manager-tc-")
+        | regex_search("^memcached-session-manager-tc-(?!"+memcached_session_manager_version+")")
+        | count > 0
+    - name: memcached-session-manager
+      file:
+        path: '{{ libjars | regex_search("memcached-session-manager-") | regex_search("^memcached-session-manager-(?!"+memcached_session_manager_version+")") }}'
+        state: absent
+      when: libjars | regex_search("memcached-session-manager-")
+        | regex_search("^memcached-session-manager-(?!"+memcached_session_manager_version+")")
+        | count > 0
+  when: memcached_nodes != ""
 
 - name: config context.xml / Manager element
   template:

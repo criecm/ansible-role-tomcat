@@ -1,9 +1,10 @@
 ---
 # upgrade this to trigger re-install
 tomcat_role_version: 2
+#https://github.com/magro/memcached-session-manager/wiki/SetupAndConfiguration
 memcached_session_manager_version: '2.3.2'
 spymemcached_version: '2.12.3'
-tomcat_version: 8.0
+tomcat_version: 9.0
 memcached_nodes: ''
 proxies_ips_regex: ''
 classpath_adds: ''
