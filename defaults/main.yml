@@ -13,8 +13,8 @@ tomcat_storepass: ''
 tomcat_log_dir: /var/log/tomcat
 tomcat_base_dir: /var/lib/tomcat
 tomcat_service: 'tomcat{{ tomcat_version | regex_replace("[\.0]","") }}'
-freebsd_jdk_pkg: openjdk8-jre
-debian_jdk_pkg: openjdk-8-jre
+freebsd_jdk_pkg: openjdk11
+debian_jdk_pkg: openjdk-11-jre
 tomcat_http_port: 8080
 tomcat_ajp_port: 8009
 tomcat_apr_port: ''
