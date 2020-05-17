@@ -16,6 +16,8 @@ FreeBSD & Debian, tomcat 8/9, jdk8, memcache sessions, remoteipvalve support
   http port
 * `tomcat_ajp_port` (8009)
   ajp port
+* `tomcat_ajp_address (0.0.0.0)`
+  ajp listen address
 * `tomcat_keystore` ('')
   path to a keystore file
 * `tomcat_storepass` ('')

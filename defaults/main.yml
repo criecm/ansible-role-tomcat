@@ -17,6 +17,7 @@ freebsd_jdk_pkg: openjdk11
 debian_jdk_pkg: openjdk-11-jre
 tomcat_http_port: 8080
 tomcat_ajp_port: 8009
+tomcat_ajp_address: '0.0.0.0'
 tomcat_apr_port: ''
 tomcat_apr_cert: ''
 tomcat_apr_key: ''
