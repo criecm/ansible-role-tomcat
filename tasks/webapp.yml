@@ -5,18 +5,20 @@
 
 - name: '{{ webapp.key }}: copy git dir'
   git:
-    depth: 1
+    depth: 10
     dest: '{{ webapp.gitdst }}'
     repo: '{{ webapp.gitsrc }}'
+    accept_hostkey: yes
   when: '"gitsrc" in onewebapp and "gitdst" in onewebapp'
 
 - name: '{{ webapp.key }}: chown git dest'
   file:
+    path: '{{ webapp.gitdst }}'
     state: directory
-    user: root
+    owner: root
     group: '{{ tomcat_group }}'
-    mode: g+r,o-rwx
-    recursive: yes
+    mode: g+Xr,o-rwx
+    recurse: yes
   when: '"gitdst" in onewebapp'
 
 - name: '{{ webapp.key }}: delete old war'
