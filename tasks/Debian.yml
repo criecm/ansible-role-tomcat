@@ -3,7 +3,7 @@
 - name: install java & tomcat
   apt:
     name:
-      - tomcat8
+      - tomcat{{ tomcat_version | regex_replace("[\.0]","") }}
       - '{{ debian_jdk_pkg }}'
       - libtcnative-1
     state: present
