@@ -60,7 +60,7 @@
 
 - name: tomcat defaults vars
   lineinfile:
-      dest: /etc/default/tomcat8
+      dest: /etc/default/tomcat{{ tomcat_version | regex_replace("[\.0]","") }}
       line: '{{ item.key }}="{{ item.value }}"'
       regexp: '^{{ item.key }}='
   with_dict:
