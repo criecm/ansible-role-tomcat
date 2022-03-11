@@ -8,7 +8,7 @@ FreeBSD & Debian, tomcat 8/9, jdk8, memcache sessions, remoteipvalve support
 
 * `classpath_adds` ('')
   jar's list to be added, column-separated (:)
-* `tomcat_java_opts` ('-Djava.awt.headless=true -XX:+UseConcMarkSweepGC -Xms1024m -Xmx1024m')
+* `tomcat_java_opts` ('-Djava.awt.headless=true -XX:+UseConcMarkSweepGC -Xms1024m -Xmx2g -Dlog4j2.formatMsgNoLookups=true')
   additional java command args
 * `tomcat_lang_opts` ('')
   additional java command args

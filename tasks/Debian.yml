@@ -5,6 +5,7 @@
     name:
       - tomcat{{ tomcat_version | regex_replace("[\.0]","") }}
       - '{{ debian_jdk_pkg }}'
+      - default-jre
       - libtcnative-1
     state: present
   when: do_sys
