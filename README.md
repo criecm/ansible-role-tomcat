@@ -34,6 +34,8 @@ FreeBSD & Debian, tomcat 8/9, jdk8, memcache sessions, remoteipvalve support
   PEM key for above cert. Mandatory if you want TLS with APR
 * `jre_dir (depend on distrib)`
   path to jre for tomcat
+* `tomcat_env_vars ({})`
+  dict of environment variables for tomcat
 * see `defaults/main.yml` for exhaustive list
 
 ### http(s) reverse-proxy support
