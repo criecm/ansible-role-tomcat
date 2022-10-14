@@ -16,23 +16,6 @@
     state: present
   when: memcached_nodes is search(ansible_hostname) or memcached_nodes is search("localhost")
 
-- name: tomcat group
-  group:
-    name: '{{ tomcat_group }}'
-    state: present
-  when: do_sys
-
-- name: tomcat user
-  user:
-    name: '{{ tomcat_user }}'
-    group: '{{ tomcat_group }}'
-    home: /nonexistent
-    shell: /usr/sbin/nologin
-    createhome: False
-    login_class: daemon
-    state: present
-  when: do_sys
-
 - name: mkdir
   file:
     path: '{{ tomcat_log_dir }}'

@@ -14,6 +14,43 @@
     state: present
   when: memcached_nodes is search(ansible_hostname) or memcached_nodes is search("localhost")
 
+- name: x509 certs
+  block:
+    - name: ca-certificates-java.jar
+      copy:
+        src: ca-certificates-java.jar
+        dest: /root/ca-certificates-java.jar
+        mode: '0644'
+    - name: mkdir /etc/ssl/certs/java
+      file:
+        path: /etc/ssl/certs/java
+        state: directory
+        mode: '0755'
+    - name: stat /etc/ssl/certs/java/cacerts
+      stat:
+        path: /etc/ssl/certs/java/cacerts
+      register: stat_cacerts
+    - name: stat /usr/local/etc/ssl/certs
+      stat:
+        path: /usr/local/etc/ssl/certs
+      register: stat_local_certs
+    - name: update cacerts if needed
+      shell: "( find /usr/share/certs/trusted /usr/local/etc/ssl/certs -type f | sed 's@^@+@'; find /usr/share/certs/blacklisted | sed 's@^@-@' ) | java -Xmx64m -jar /root/ca-certificates-java.jar -storepass 'changeit'"
+      register: update_cacerts
+      when: stat_local_certs.stat.exists and ( not stat_cacerts.stat.exists or stat_cacerts.stat.mtime < stat_local_certs.stat.mtime )
+    - name: stat {{ freebsd_jdk_pkg }} cacerts
+      stat:
+        path: '{{ tomcat_jre_dir }}/lib/security/cacerts'
+        follow: no
+      register: jre_cacerts
+    - name: replace jre cacerts
+      file:
+        path: '{{ tomcat_jre_dir }}/lib/security/cacerts'
+        follow: no
+        state: link
+        src: /etc/ssl/certs/java/cacerts
+  when: x509_ca_path | default(False)
+
 - name: tomcat group
   group:
     name: '{{ tomcat_group }}'
