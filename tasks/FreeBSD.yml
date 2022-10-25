@@ -43,6 +43,17 @@
         path: '{{ tomcat_jre_dir }}/lib/security/cacerts'
         follow: no
       register: jre_cacerts
+    - name: move static cacerts
+      copy:
+        src: '{{ tomcat_jre_dir }}/lib/security/cacerts'
+        dest: '{{ tomcat_jre_dir }}/lib/security/cacerts.orig'
+        remote_src: yes
+      when: jre_cacerts.stat.isreg
+    - name: rm cacerts
+      file:
+        path: '{{ tomcat_jre_dir }}/lib/security/cacerts'
+        state: absent
+      when: jre_cacerts.stat.isreg
     - name: replace jre cacerts
       file:
         path: '{{ tomcat_jre_dir }}/lib/security/cacerts'
