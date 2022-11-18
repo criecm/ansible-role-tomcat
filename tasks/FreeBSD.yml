@@ -134,7 +134,7 @@
     line: 'tomcat{{ tomcat_version | regex_replace("[\.0]","") }}_{{ item.key }}="{{ item.value }}"'
     regexp: '^tomcat{{ tomcat_version | regex_replace("[\.0]","") }}_{{ item.key }}='
   with_dict:
-    enable: YES
+    enable: "YES"
     catalina_user: '{{ tomcat_user }}'
     stdout: '{{ tomcat_log_dir }}/catalina.out'
     stderr: '{{ tomcat_log_dir }}/catalina.err'
