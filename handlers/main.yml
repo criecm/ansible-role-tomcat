@@ -1,4 +1,7 @@
 ---
+- name: sysctl v6only 0
+  command: 'sysctl net.inet6.ip6.v6only=0'
+
 - name: restart tomcat
   service:
     name: '{{ tomcat_service }}'
