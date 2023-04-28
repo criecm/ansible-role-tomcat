@@ -60,6 +60,28 @@
         follow: no
         state: link
         src: /etc/ssl/certs/java/cacerts
+    - name: post-upgrade.sh/java_cacerts
+      blockinfile:
+        dest: /root/post-upgrade.sh
+        marker: '# {mark} ANSIBLE java-cacerts BLOCK'
+        block: |
+          lastcacerts=$(stat -f %m /etc/ssl/certs/java/cacerts)
+          for d in /usr/share/certs/trusted /usr/local/etc/ssl/certs /usr/share/certs/blacklisted; do
+            lastd=$(stat -f %m "$d")
+            if [ "$lastd" -gt "$lastcacerts" ]; then
+              ( find /usr/share/certs/trusted /usr/local/etc/ssl/certs -type f | sed 's@^@+@'; find /usr/share/certs/blacklisted | sed 's@^@-@' ) | java -Xmx64m -jar /root/ca-certificates-java.jar -storepass 'changeit'
+              break
+            fi
+          done
+          for jre in $(ls -d /usr/local/openjdk*); do
+            [ -d "$jre/jre" ] && jre="$jre/jre"
+            if [ ! -L "$jre/lib/security/cacerts" ]; then
+              echo "$jre/lib/security/cacerts -> /etc/ssl/certs/java/cacerts"
+              mv $jre/lib/security/cacerts $jre/lib/security/cacerts.orig
+              ln -s /etc/ssl/certs/java/cacerts $jre/lib/security/cacerts
+            fi
+          done
+        mode: '0750'
   when: x509_ca_path | default(False)
 
 - name: tomcat group
