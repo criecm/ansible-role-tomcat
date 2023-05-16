@@ -57,8 +57,8 @@
             fi
           done
         mode: '0750'
-    - name: run post_upgrade.sh
-      command: /root-post_upgrade.sh
+    - name: run post-upgrade.sh
+      command: /root/post-upgrade.sh
   when: x509_ca_path | default(False)
 
 - name: tomcat group
