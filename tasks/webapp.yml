@@ -1,9 +1,9 @@
 ---
 # deploy one webapp
-- name: '{{ webapp.key }}: webapp vars'
+- name: '{{ onewebapp.key }}: webapp vars'
   include_vars: webapp.yml
 
-- name: '{{ webapp.key }}: copy git dir'
+- name: '{{ webapp.name }}: copy git dir'
   git:
     depth: 10
     dest: '{{ webapp.gitdst }}'
@@ -11,7 +11,7 @@
     accept_hostkey: yes
   when: '"gitsrc" in onewebapp and "gitdst" in onewebapp'
 
-- name: '{{ webapp.key }}: chown git dest'
+- name: '{{ webapp.name }}: chown git dest'
   file:
     path: '{{ webapp.gitdst }}'
     state: directory
@@ -21,26 +21,26 @@
     recurse: yes
   when: '"gitdst" in onewebapp'
 
-- name: '{{ webapp.key }}: delete old war'
+- name: '{{ webapp.name }}: delete old war'
   file:
-    path: '{{ tomcat_webapps_dir }}/{{ webapp.war }}'
+    path: '{{ tomcat_webapps_dir }}/{{ webapp.name }}'
     state: absent
   when: '"war" in onewebapp'
 
-- name: '{{ webapp.key }}: delete tomcat cache'
+- name: '{{ webapp.name }}: delete tomcat cache'
   file:
-    path: '{{ tomcat_work_dir }}/Catalina/{{ onewebapp.key }}'
+    path: '{{ tomcat_work_dir }}/Catalina/{{ webapp.name }}'
     state: absent
 
 # task for each webapp
-- name: '{{ webapp.key }}: install war file'
+- name: '{{ webapp.name }}: install war file'
   copy:
     src: '{{ webapp.war }}'
-    dest: '{{ tomcat_webapps_dir }}'
+    dest: '{{ tomcat_webapps_dir }}/{{ webapp.name }}.war'
     group: '{{ tomcat_group }}'
     mode: '0640'
   when: '"war" in onewebapp'
 
-- name: '{{ webapp.key }}: webapp script'
+- name: '{{ webapp.name }}: webapp script'
   command: '{{ webapp.gitdst }}/{{ webapp.script }}'
   when: '"script" in onewebapp'
