@@ -137,7 +137,7 @@
     catalina_user: '{{ tomcat_user }}'
     stdout: '{{ tomcat_log_dir }}/catalina.out'
     stderr: '{{ tomcat_log_dir }}/catalina.err'
-    java_opts: "{{ tomcat_java_opts }} {{ tomcat_lang_opts }}{% if tomcat_keystore != '' %} -Djavax.net.ssl.trustStore=/etc/ssl/{{ tomcat_keystore | regex_replace('.*/','') }} -Djavax.net.ssl.trustStorePassword='{{ tomcat_storepass }}'{% endif %}{% if ansible_all_ipv4_addresses | count() == 0 %} -Djava.net.preferIPv4Stack=false -Djava.net.preferIPv6Addresses=true{% elif ansible_all_ipv6_addresses | count() > 0 %} -Djava.net.preferIPv4Stack=false{% endif %}"
+    java_opts: "{{ tomcat_java_opts }}{{ tomcat_lang_opts }}{% if tomcat_keystore != '' %} -Djavax.net.ssl.trustStore=/etc/ssl/{{ tomcat_keystore | regex_replace('.*/','') }} -Djavax.net.ssl.trustStorePassword='{{ tomcat_storepass }}'{% endif %}{% if ansible_all_ipv4_addresses | count() == 0 %} -Djava.net.preferIPv4Stack=false -Djava.net.preferIPv6Addresses=true{% elif ansible_all_ipv6_addresses | count() > 0 %} -Djava.net.preferIPv4Stack=false{% endif %}"
     java_home: '{{ tomcat_jre_dir }}'
     classpath: "{% if classpath_adds != '' %}:{{ classpath_adds }}{% endif %}"
     tmp_dir: "{% if tomcat_tmp_dir != '' %}{{ tomcat_tmp_dir }}{% else %}/var/tmp/{{ tomcat_service }}{% endif %}"
