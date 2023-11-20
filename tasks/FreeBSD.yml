@@ -132,6 +132,7 @@
     dest: /etc/rc.conf
     line: 'tomcat{{ tomcat_version | regex_replace("[\.0]","") }}_{{ item.key }}="{{ item.value }}"'
     regexp: '^tomcat{{ tomcat_version | regex_replace("[\.0]","") }}_{{ item.key }}='
+    state: '{% if item.value != "" %}present{% else %}absent{% endif %}'
   with_dict:
     enable: "YES"
     catalina_user: '{{ tomcat_user }}'
@@ -142,6 +143,7 @@
     classpath: "{% if classpath_adds != '' %}:{{ classpath_adds }}{% endif %}"
     tmp_dir: "{% if tomcat_tmp_dir != '' %}{{ tomcat_tmp_dir }}{% else %}/var/tmp/{{ tomcat_service }}{% endif %}"
     wait: '5'
+    env_file: '{{ tomcat_env_file }}'
   notify: restart tomcat
 
 - name: sysctl net.inet6.ip6.v6only

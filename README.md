@@ -36,6 +36,8 @@ FreeBSD & Debian, tomcat 8/9, jdk8, memcache sessions, remoteipvalve support
   path to jre for tomcat
 * `tomcat_env_vars ({})`
   dict of environment variables for tomcat
+* `tomcat_env_file ('')`
+  a file sourced for environment variables
 * see `defaults/main.yml` for exhaustive list
 
 ### http(s) reverse-proxy support
