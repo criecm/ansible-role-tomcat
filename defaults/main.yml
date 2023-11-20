@@ -21,7 +21,8 @@ tomcat_ajp_address: '0.0.0.0'
 tomcat_apr_port: ''
 tomcat_apr_cert: ''
 tomcat_apr_key: ''
-tomcat_java_opts: "-Djava.awt.headless=true -Xms1G -Xmx2G -Dlog4j2.formatMsgNoLookups=true"
+tomcat_java_opts: ""
+tomcat_java_default_opts: "-Djava.awt.headless=true -Xms1G -Xmx2G -Dlog4j2.formatMsgNoLookups=true -Dfile.encoding=UTF-8"
 tomcat_tmp_dir: '/var/tmp/tomcat{{ tomcat_version | regex_replace("\..*","") }}'
 tomcat_catalina_props: []
 tomcat_webapps: []
