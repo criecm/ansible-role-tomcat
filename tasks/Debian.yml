@@ -48,6 +48,20 @@
     dest: '/usr/share/tomcat{{ tomcat_version | regex_replace("[\.0]","") }}/bin/setenv.sh'    
   when: tomcat_env_file != ''
 
+- name: java_opts
+  set_fact:
+    this_tomcat_java_opts: "{{ tomcat_java_default_opts }}{%
+      if tomcat_java_gc_opts %} {{ tomcat_java_gc_opts }}{%
+      endif %}{%
+      if tomcat_lang_opts %} {{ tomcat_lang_opts }}{%
+      endif %}{%
+      if tomcat_java_opts %} {{ tomcat_java_opts }}{%
+      endif %}{%
+      if tomcat_keystore != '' %} -Djavax.net.ssl.trustStore=/etc/ssl/{{ tomcat_keystore | regex_replace('.*/','') }} -Djavax.net.ssl.trustStorePassword='{{ tomcat_storepass }}'{%
+      endif %}{%
+      if classpath_adds != '' %} -cp {{ classpath_adds }}{%
+      endif %}"
+
 - name: tomcat defaults vars
   lineinfile:
     dest: '/etc/default/tomcat{{ tomcat_version | regex_replace("[\.0]","") }}'
@@ -57,6 +71,6 @@
     TOMCAT9_USER: '{{ tomcat_user }}'
     TOMCAT9_GROUP: '{{ tomcat_group }}'
     JAVA_HOME: '{{ tomcat_jre_dir }}'
-    JAVA_OPTS: "{{ tomcat_java_default_opts }} {{ tomcat_java_opts }} {{ tomcat_lang_opts }}{% if tomcat_keystore != '' %} -Djavax.net.ssl.trustStore=/etc/ssl/{{ tomcat_keystore | regex_replace('.*/','') }} -Djavax.net.ssl.trustStorePassword='{{ tomcat_storepass }}'{% endif %}{% if classpath_adds != '' %} -cp {{ classpath_adds }}{% endif %}"
+    JAVA_OPTS: '{{ this_tomcat_java_opts }}'
     JVM_TMP: '{% if tomcat_tmp_dir != "" %}{{ tomcat_tmp_dir }}{% else %}/var/tmp/{{ tomcat_service }}{% endif %}'
   when: do_sys

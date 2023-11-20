@@ -127,6 +127,21 @@
     dest: /usr/local/etc/newsyslog.conf.d/tomcat.conf
   when: do_sys
 
+- name: java_opts
+  set_fact:
+    this_tomcat_java_opts: "{{ tomcat_java_default_opts }}{%
+      if tomcat_java_gc_opts %} {{ tomcat_java_gc_opts }}{%
+      endif %}{%
+      if tomcat_lang_opts %} {{ tomcat_lang_opts }}{%
+      endif %}{%
+      if tomcat_java_opts %} {{ tomcat_java_opts }}{%
+      endif %}{%
+      if ansible_all_ipv4_addresses | count() == 0 %} -Djava.net.preferIPv4Stack=false -Djava.net.preferIPv6Addresses=true{%
+      elif ansible_all_ipv6_addresses | count() > 0 %} -Djava.net.preferIPv4Stack=false{%
+      endif %}{%
+      if tomcat_keystore != '' %} -Djavax.net.ssl.trustStore=/etc/ssl/{{ tomcat_keystore | regex_replace('.*/','') }} -Djavax.net.ssl.trustStorePassword='{{ tomcat_storepass }}'{%
+      endif %}"
+
 - name: enable tomcat
   lineinfile:
     dest: /etc/rc.conf
@@ -138,7 +153,7 @@
     catalina_user: '{{ tomcat_user }}'
     stdout: '{{ tomcat_log_dir }}/catalina.out'
     stderr: '{{ tomcat_log_dir }}/catalina.err'
-    java_opts: "{{ tomcat_java_default_opts }} {{ tomcat_java_opts }} {{ tomcat_lang_opts }}{% if tomcat_keystore != '' %} -Djavax.net.ssl.trustStore=/etc/ssl/{{ tomcat_keystore | regex_replace('.*/','') }} -Djavax.net.ssl.trustStorePassword='{{ tomcat_storepass }}'{% endif %}{% if ansible_all_ipv4_addresses | count() == 0 %} -Djava.net.preferIPv4Stack=false -Djava.net.preferIPv6Addresses=true{% elif ansible_all_ipv6_addresses | count() > 0 %} -Djava.net.preferIPv4Stack=false{% endif %}"
+    java_opts: '{{ this_tomcat_java_opts }}'
     java_home: '{{ tomcat_jre_dir }}'
     classpath: "{% if classpath_adds != '' %}:{{ classpath_adds }}{% endif %}"
     tmp_dir: "{% if tomcat_tmp_dir != '' %}{{ tomcat_tmp_dir }}{% else %}/var/tmp/{{ tomcat_service }}{% endif %}"

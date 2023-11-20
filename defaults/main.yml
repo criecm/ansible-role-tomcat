@@ -5,6 +5,9 @@ tomcat_role_version: 2
 memcached_session_manager_version: '2.3.2'
 spymemcached_version: '2.12.3'
 tomcat_version: 9.0
+tomcat_java_version: 11
+freebsd_jdk_pkg: 'openjdk{{ tomcat_java_version }}'
+debian_jdk_pkg: 'openjdk-{{ tomcat_java_version }}-jre'
 memcached_nodes: ''
 proxies_ips_regex: ''
 classpath_adds: ''
@@ -13,16 +16,15 @@ tomcat_storepass: ''
 tomcat_log_dir: /var/log/tomcat
 tomcat_base_dir: /var/lib/tomcat
 tomcat_service: 'tomcat{{ tomcat_version | regex_replace("[\.0]","") }}'
-freebsd_jdk_pkg: openjdk11
-debian_jdk_pkg: openjdk-11-jre
 tomcat_http_port: 8080
 tomcat_ajp_port: 8009
 tomcat_ajp_address: '0.0.0.0'
 tomcat_apr_port: ''
 tomcat_apr_cert: ''
 tomcat_apr_key: ''
-tomcat_java_opts: ""
+tomcat_java_opts: ''
 tomcat_java_default_opts: "-Djava.awt.headless=true -Xms1G -Xmx2G -Dlog4j2.formatMsgNoLookups=true -Dfile.encoding=UTF-8"
+tomcat_java_gc_opts: '{% if tomcat_java_version < 9 %}-XX:+UseConcMarkSweepGC{% endif %}'
 tomcat_tmp_dir: '/var/tmp/tomcat{{ tomcat_version | regex_replace("\..*","") }}'
 tomcat_catalina_props: []
 tomcat_webapps: []

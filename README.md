@@ -8,8 +8,14 @@ FreeBSD & Debian, tomcat 8/9, jdk8, memcache sessions, remoteipvalve support
 
 * `classpath_adds` ('')
   jar's list to be added, column-separated (:)
-* `tomcat_java_opts` ('-Djava.awt.headless=true -XX:+UseConcMarkSweepGC -Xms1024m -Xmx2g -Dlog4j2.formatMsgNoLookups=true')
-  additional java command args
+* `tomcat_java_version (11)`
+  Java version wanted to run tomcat
+* `tomcat_default_java_opts` ('-Djava.awt.headless=true -Xms1024m -Xmx2g -Dlog4j2.formatMsgNoLookups=true')
+  java command args
+* `tomcat_java_gc_opts ('-XX:+UseConcMarkSweepGC' if java < 9, '' else)`
+  override java GC opts
+* `tomcat_java_opts ('')`
+  additional java opts for tomcat startup
 * `tomcat_lang_opts` ('')
   additional java command args
 * `tomcat_http_port` (8080)
@@ -57,8 +63,8 @@ Session are replicated between memcache instances on each tomcat host
 Using https://github.com/magro/memcached-session-manager/wiki
 
 * `memcached_nodes` has to be filled as this:
-  <code><pre>memcached_nodes: 'japps3:japps3.serv.int:11211,japps4:japps4.serv.int:11211'</pre></code>
-  node names (here japps3/japps4) *MUST* match inventory `inventory_hostname`
+  <code><pre>memcached_nodes: 'srv1:srv1.fqdn:11211,srv2:srv2.fqdn:11211'</pre></code>
+  node names (here srv1/srv2) *MUST* match inventory `inventory_hostname`
 * `tomcat_memcached_sticky (True)`
   If set to false, enable non-sticky synchronous sessions
 
