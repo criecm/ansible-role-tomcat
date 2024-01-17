@@ -3,7 +3,7 @@
 - name: install java & tomcat
   apt:
     name:
-      - tomcat{{ tomcat_version | regex_replace("[\\.0]","") }}
+      - tomcat{{ tomcat_version | regex_replace("\.0?","") }}
       - '{{ debian_jdk_pkg }}'
       - default-jre
       - libtcnative-1
@@ -45,7 +45,7 @@
 - name: tomcat env file
   copy:
     src: '{{ tomcat_env_file }}'
-    dest: '/usr/share/tomcat{{ tomcat_version | regex_replace("[\.0]","") }}/bin/setenv.sh'    
+    dest: '/usr/share/tomcat{{ tomcat_version | regex_replace("\.0?","") }}/bin/setenv.sh'
   when: tomcat_env_file != ''
 
 - name: java_opts
@@ -64,7 +64,7 @@
 
 - name: tomcat defaults vars
   lineinfile:
-    dest: '/etc/default/tomcat{{ tomcat_version | regex_replace("[\.0]","") }}'
+    dest: '/etc/default/tomcat{{ tomcat_version | regex_replace("\.0?","") }}'
     line: '{{ item.key }}="{{ item.value }}"'
     regexp: '^{{ item.key }}='
   with_dict:

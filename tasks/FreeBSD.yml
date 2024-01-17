@@ -3,7 +3,7 @@
 - name: install java & tomcat
   pkgng:
     name:
-      - tomcat{{ tomcat_version | regex_replace("[\.0]","") }}
+      - tomcat{{ tomcat_version | regex_replace("\.0?","") }}
       - '{{ freebsd_jdk_pkg }}'
       - tomcat-native
     state: present
@@ -145,8 +145,8 @@
 - name: enable tomcat
   lineinfile:
     dest: /etc/rc.conf
-    line: 'tomcat{{ tomcat_version | regex_replace("[\.0]","") }}_{{ item.key }}="{{ item.value }}"'
-    regexp: '^tomcat{{ tomcat_version | regex_replace("[\.0]","") }}_{{ item.key }}='
+    line: 'tomcat{{ tomcat_version | regex_replace("\.0?","") }}_{{ item.key }}="{{ item.value }}"'
+    regexp: '^tomcat{{ tomcat_version | regex_replace("\.0?","") }}_{{ item.key }}='
     state: '{% if item.value != "" %}present{% else %}absent{% endif %}'
   with_dict:
     enable: "YES"
@@ -171,6 +171,6 @@
 - name: tomcat env vars
   lineinfile:
     dest: /etc/rc.conf
-    line: 'tomcat{{ tomcat_version | regex_replace("[\.0]","") }}_env="{% for k in tomcat_env_vars.keys() %}{{ k }}=\"{{ tomcat_env_vars[k] }}\" {% endfor %}"'
-    regexp: 'tomcat{{ tomcat_version | regex_replace("[\.0]","") }}_env='
+    line: 'tomcat{{ tomcat_version | regex_replace("\.0?","") }}_env="{% for k in tomcat_env_vars.keys() %}{{ k }}=\"{{ tomcat_env_vars[k] }}\" {% endfor %}"'
+    regexp: 'tomcat{{ tomcat_version | regex_replace("\.0?","") }}_env='
   when: tomcat_env_vars.keys() | count() > 0

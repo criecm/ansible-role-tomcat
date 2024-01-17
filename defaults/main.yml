@@ -15,7 +15,7 @@ tomcat_keystore: ''
 tomcat_storepass: ''
 tomcat_log_dir: /var/log/tomcat
 tomcat_base_dir: /var/lib/tomcat
-tomcat_service: 'tomcat{{ tomcat_version | regex_replace("[\.0]","") }}'
+tomcat_service: 'tomcat{{ tomcat_version | regex_replace("\.0?","") }}'
 tomcat_http_port: 8080
 tomcat_ajp_port: 8009
 tomcat_ajp_address: '0.0.0.0'
