@@ -70,8 +70,15 @@
     line: '{{ item.key }}="{{ item.value }}"'
     regexp: '^{{ item.key }}='
   with_dict:
-    TOMCAT9_USER: '{{ tomcat_user }}'
-    TOMCAT9_GROUP: '{{ tomcat_group }}'
     JAVA_HOME: '{{ tomcat_jre_dir }}'
     JAVA_OPTS: '{{ this_tomcat_java_opts }}'
     JVM_TMP: '{% if tomcat_tmp_dir != "" %}{{ tomcat_tmp_dir }}{% else %}/var/tmp/{{ tomcat_service }}{% endif %}'
+
+- name: tomcat default user
+  lineinfile:
+    dest: '/etc/default/tomcat{{ tomcat_version | regex_replace("\.0?","") }}'
+    line: 'TOMCAT{{ tomcat_version | regex_replace("\.0?","") }}_{{ item }}="{{ tomcat_user }}"'
+    regexp: '^TOMCAT[0-9]+_{{ item }}='
+  loop:
+    - USER
+    - GROUP
