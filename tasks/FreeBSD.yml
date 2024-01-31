@@ -129,12 +129,12 @@
 
 - name: java_opts
   set_fact:
-    this_tomcat_java_opts: "{{ tomcat_java_default_opts }}{%
-      if tomcat_java_gc_opts %} {{ tomcat_java_gc_opts }}{%
-      endif %}{%
-      if tomcat_lang_opts %} {{ tomcat_lang_opts }}{%
-      endif %}{%
+    this_tomcat_java_opts: "{%
       if tomcat_java_opts %} {{ tomcat_java_opts }}{%
+      endif %}{%
+      if tomcat_java_gc_opts %} {{ tomcat_java_gc_opts }}{%
+      endif %}{{ tomcat_java_default_opts }}{%
+      if tomcat_lang_opts %} {{ tomcat_lang_opts }}{%
       endif %}{%
       if ansible_all_ipv4_addresses | count() == 0 %} -Djava.net.preferIPv4Stack=false -Djava.net.preferIPv6Addresses=true{%
       elif ansible_all_ipv6_addresses | count() > 0 %} -Djava.net.preferIPv4Stack=false{%
