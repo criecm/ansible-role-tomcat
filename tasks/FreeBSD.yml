@@ -94,7 +94,15 @@
   with_items:
     - '{{ tomcat_config_dir }}'
 
-- name: chown tomcat dirs
+- name: chown tomcat webapps dir
+  file:
+    path: '{{ item }}'
+    mode: u=rwX,g=rwX,o-rwx
+    owner: '{{ tomcat_user }}'
+  with_items:
+    - '{{ tomcat_webapps_dir }}'
+
+- name: chown -R dirs
   file:
     path: '{{ item }}'
     mode: u=rwX,g=rwX,o-rwx
@@ -102,10 +110,8 @@
     recurse: yes
   with_items:
     - '{{ tomcat_log_dir }}'
-    - '{{ tomcat_webapps_dir }}'
     - '{{ tomcat_work_dir }}'
     - '{{ tomcat_config_dir }}/Catalina'
-  when: do_sys
 
 - name: login.conf utf8
   blockinfile:
@@ -119,20 +125,18 @@
     validate: 'cap_mkdb %s'
     path: /etc/login.conf
   notify: cap_mkdb login.conf
-  when: do_sys
 
 - name: newsyslog
   template:
     src: newsyslog_tomcat.conf
     dest: /usr/local/etc/newsyslog.conf.d/tomcat.conf
-  when: do_sys
 
 - name: java_opts
   set_fact:
     this_tomcat_java_opts: "{%
-      if tomcat_java_opts %} {{ tomcat_java_opts }}{%
+      if tomcat_java_opts %}{{ tomcat_java_opts }} {%
       endif %}{%
-      if tomcat_java_gc_opts %} {{ tomcat_java_gc_opts }}{%
+      if tomcat_java_gc_opts %}{{ tomcat_java_gc_opts }} {%
       endif %}{{ tomcat_java_default_opts }}{%
       if tomcat_lang_opts %} {{ tomcat_lang_opts }}{%
       endif %}{%
@@ -152,7 +156,7 @@
     enable: "YES"
     catalina_user: '{{ tomcat_user }}'
     stdout: '{{ tomcat_log_dir }}/catalina.out'
-    stderr: '{{ tomcat_log_dir }}/catalina.err'
+    stderr: ''
     java_opts: '{{ this_tomcat_java_opts }}'
     java_home: '{{ tomcat_jre_dir }}'
     classpath: "{% if classpath_adds != '' %}:{{ classpath_adds }}{% endif %}"

@@ -33,3 +33,6 @@ myapp: ''
 tomcat_lang_opts: ''
 tomcat_env_vars: {}
 tomcat_env_file: ''
+tomcat_process: java
+tomcat_forced_deploy: False
+tomcat_webapp_log: catalina.out

@@ -78,4 +78,6 @@ Using https://github.com/magro/memcached-session-manager/wiki
   * `gitsrc` will be cloned in dir `gitdst` if both exists
   * `script` is the command line, relative to `gitdst`, to be launched (as root) user after deploying (if any)
 
+* `tomcat_forced_deploy (False)` force tomcat to be stopped before deployment and apps dirs forcibly removed
+
 * `myapp ('')` If defined, only deploy this app (must match webapp.key)

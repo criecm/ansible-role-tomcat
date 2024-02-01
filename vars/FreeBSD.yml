@@ -7,3 +7,4 @@ tomcat_work_dir: '{{ tomcat_base_dir }}/work'
 tomcat_jre_dir: '{{ jre_dir | default("/usr/local/"+freebsd_jdk_pkg) }}'
 tomcat_user: www
 tomcat_group: www
+tomcat_process: jsvc

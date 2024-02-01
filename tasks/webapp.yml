@@ -23,14 +23,43 @@
 
 - name: '{{ webapp.name }}: delete old war'
   file:
-    path: '{{ tomcat_webapps_dir }}/{{ webapp.name }}'
+    path: '{{ tomcat_webapps_dir }}/{{ webapp.name }}.war'
     state: absent
   when: '"war" in onewebapp'
 
-- name: '{{ webapp.name }}: delete tomcat cache'
-  file:
-    path: '{{ tomcat_work_dir }}/Catalina/{{ webapp.name }}'
+- name: wait for app to be removed
+  wait_for:
+    path: '{{ tomcat_webapps_dir }}/{{ webapp.name }}'
     state: absent
+  ignore_errors: yes
+  register: autoremove
+  when: tomcat_running
+
+- name: stop tomcat on deployment error
+  block:
+    - name: 'stop tomcat because of {{ webapp.name }}'
+      service:
+        name: '{{ tomcat_service }}'
+        state: stopped
+    - name: force stop tomcat
+      command: 'pkill -u {{ tomcat_user }} {{ tomcat_process }}'
+      failed_when: false
+    - name: set tomcat_running=false
+      set_fact:
+        tomcat_running: false
+  when: tomcat_running and autoremove.failed
+
+- name: remove app "manually"
+  block:
+    - name: delete app
+      file:
+        path: '{{ tomcat_webapps_dir }}/{{ webapp.name }}'
+        state: absent
+    - name: '{{ webapp.name }}: delete tomcat cache'
+      file:
+        path: '{{ tomcat_work_dir }}/Catalina/{{ webapp.name }}'
+        state: absent
+  when: not tomcat_running
 
 # task for each webapp
 - name: '{{ webapp.name }}: install war file'
@@ -40,6 +69,18 @@
     group: '{{ tomcat_group }}'
     mode: '0640'
   when: '"war" in onewebapp'
+
+- name: wait for app to be deployed
+  wait_for:
+    path: '{{ tomcat_log_dir }}/{{ tomcat_webapp_log }}'
+    search_regex: 'Deployment of web application archive \[{{ tomcat_webapps_dir }}/{{ webapp.name }}.war\] has finished in \[(?P<secs>[0-9,]+)\] ms'
+  register: waitfor
+  when: tomcat_running
+
+- name: show deploy time
+  debug:
+    msg: "webapp {{ webapp.name }} deployed in {{ waitfor['match_groupdict']['secs'] }} ms"
+  when: tomcat_running
 
 - name: '{{ webapp.name }}: webapp script'
   command: '{{ webapp.gitdst }}/{{ webapp.script }}'

@@ -128,6 +128,38 @@
   notify: restart tomcat
   tags: tomcat, config
 
+- name: stop tomcat if forced
+  service:
+    name: '{{ tomcat_service }}'
+    state: stopped
+  when: tomcat_forced_deploy
+
+- name: force stop tomcat if needed
+  command: 'pkill -u {{ tomcat_user }} {{ tomcat_process }}'
+  failed_when: false
+  changed_when: '{% if forcestop.rc == 0 %}true{% else %}false{% endif %}'
+  register: forcestop
+  when: tomcat_forced_deploy
+
+- name: get tomcat status
+  command: 'pgrep -u {{ tomcat_user }} {{ tomcat_process }}'
+  ignore_errors: yes
+  changed_when: false
+  check_mode: false
+  register: service_apache_status
+
+- name: set tomcat status fact
+  set_fact:
+    tomcat_running: '{% if service_apache_status.failed %}false{% else %}true{% endif %}'
+
+- name: logrotate forced
+  command: 'logrotate -f /etc/logrotate.d/tomcat{{ tomcat_version | regex_replace("\.0?","") }}'
+  when: ansible_os_family == "Debian"
+
+- name: newsyslog forced
+  command: newsyslog -F -f /usr/local/etc/newsyslog.conf.d/tomcat.conf
+  when: ansible_os_family == "FreeBSD"
+
 - name: deploy tomcat_webapps
   include_tasks: webapp.yml
   with_items: '{{ tomcat_webapps }}'
