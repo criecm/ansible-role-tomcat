@@ -173,9 +173,7 @@
   service:
     name: '{{ tomcat_service }}'
     state: started
-  when: myapps.changed
-  tags:
-    - skip_ansible_lint
+  register: tomcat_started
 
 - name: fact done
   blockinfile:
