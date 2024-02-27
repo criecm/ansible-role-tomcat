@@ -73,7 +73,7 @@
 - name: wait for app to be deployed
   wait_for:
     path: '{{ tomcat_log_dir }}/{{ tomcat_webapp_log }}'
-    search_regex: 'Deployment of web application archive \[{{ tomcat_webapps_dir }}/{{ webapp.name }}.war\] has finished in \[(?P<secs>[0-9,]+)\] ms'
+    search_regex: 'INFOS? \[[^\]]+\] org.apache.catalina.startup.HostConfig.deployWAR .*archive.*\[{{ tomcat_webapps_dir }}/{{ webapp.name }}.war\] .* \[(?P<secs>[0-9, ]+)\] ms'
   register: waitfor
   when: tomcat_running
 
