@@ -141,7 +141,7 @@
       if tomcat_lang_opts %} {{ tomcat_lang_opts }}{%
       endif %}{%
       if ansible_all_ipv4_addresses | count() == 0 %} -Djava.net.preferIPv4Stack=false -Djava.net.preferIPv6Addresses=true{%
-      elif ansible_all_ipv6_addresses | count() > 0 %} -Djava.net.preferIPv4Stack=false{%
+      elif ansible_all_ipv6_addresses | ansible.utils.ipaddr('2000::/3') | count() > 0 %} -Djava.net.preferIPv4Stack=false{%
       endif %}{%
       if tomcat_keystore != '' %} -Djavax.net.ssl.trustStore=/etc/ssl/{{ tomcat_keystore | regex_replace('.*/','') }} -Djavax.net.ssl.trustStorePassword='{{ tomcat_storepass }}'{%
       endif %}"
