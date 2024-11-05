@@ -64,7 +64,7 @@ Using https://github.com/magro/memcached-session-manager/wiki
 
 * `memcached_nodes` has to be filled as this:
   <code><pre>memcached_nodes: 'srv1:srv1.fqdn:11211,srv2:srv2.fqdn:11211'</pre></code>
-  node names (here srv1/srv2) *MUST* match inventory `inventory_hostname`
+  node names (here srv1/srv2) *MUST* match inventory `inventory_hostname` *WITHOUT dash (-)*
 * `tomcat_memcached_sticky (True)`
   If set to false, enable non-sticky synchronous sessions
 

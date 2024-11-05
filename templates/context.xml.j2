@@ -9,7 +9,7 @@
 	<Manager className="de.javakaffee.web.msm.MemcachedBackupSessionManager"
 		memcachedNodes="{{ memcached_nodes }}"
 {%   if tomcat_memcached_sticky | default(True) %}
-		failoverNodes="{{ inventory_hostname }}"
+		failoverNodes="{{ inventory_hostname | regex_replace("-","") }}"
 {%   else %}
 		lockingMode="auto"
 		sticky="false"

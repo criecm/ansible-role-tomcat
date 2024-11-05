@@ -17,7 +17,7 @@
     name: memcached
     state: started
     enabled: yes
-  when: memcached_nodes is search(ansible_hostname) or memcached_nodes is search("localhost")
+  when: memcached_nodes is search(ansible_hostname | regex_replace("-","") ) or memcached_nodes is search("localhost")
 
 # keystore
 - name: copy keystore
