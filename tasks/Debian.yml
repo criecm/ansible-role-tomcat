@@ -8,7 +8,6 @@
       - default-jre
       - libtcnative-1
     state: present
-  when: do_sys
 
 - name: install memcached
   apt:
