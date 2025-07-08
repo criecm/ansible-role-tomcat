@@ -140,7 +140,7 @@
       endif %}{{ tomcat_java_default_opts }}{%
       if tomcat_lang_opts %} {{ tomcat_lang_opts }}{%
       endif %}{%
-      if ansible_all_ipv6_addresses | reject("match","fe80:") | count() > 0 %} -Djava.net.preferIPv4Stack=false -Djava.net.preferIPv6Addresses=true{%
+      if ansible_all_ipv6_addresses | reject('match','fe80:') | count() > 0 %} -Djava.net.preferIPv4Stack=false -Djava.net.preferIPv6Addresses=true{%
       endif %}{%
       if tomcat_keystore != '' %} -Djavax.net.ssl.trustStore=/etc/ssl/{{ tomcat_keystore | regex_replace('.*/','') }} -Djavax.net.ssl.trustStorePassword='{{ tomcat_storepass }}'{%
       endif %}"
