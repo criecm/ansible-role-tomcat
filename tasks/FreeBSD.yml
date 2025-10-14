@@ -14,53 +14,6 @@
     state: present
   when: memcached_nodes is search(ansible_hostname) or memcached_nodes is search("localhost")
 
-- name: x509 certs
-  block:
-    - name: ca-certificates-java.jar
-      copy:
-        src: ca-certificates-java.jar
-        dest: /root/ca-certificates-java.jar
-        mode: '0644'
-    - name: mkdir /etc/ssl/certs/java
-      file:
-        path: /etc/ssl/certs/java
-        state: directory
-        mode: '0755'
-    - name: stat /etc/ssl/certs/java/cacerts
-      stat:
-        path: /etc/ssl/certs/java/cacerts
-      register: stat_cacerts
-    - name: stat /usr/local/etc/ssl/certs
-      stat:
-        path: /usr/local/etc/ssl/certs
-      register: stat_local_certs
-    - name: post-upgrade.sh/java_cacerts
-      blockinfile:
-        dest: /root/post-upgrade.sh
-        marker: '# {mark} ANSIBLE java-cacerts BLOCK'
-        block: |
-          mkdir -p /etc/ssl/certs/java
-          lastcacerts=$(stat -f %m /etc/ssl/certs/java/cacerts || echo 0)
-          for d in /usr/share/certs/trusted /usr/local/etc/ssl/certs /usr/share/certs/untrusted; do
-            lastd=$(stat -f %m "$d")
-            if [ "$lastd" -gt "$lastcacerts" ]; then
-              ( find /usr/share/certs/trusted /usr/local/etc/ssl/certs -type f | sed 's@^@+@'; find /usr/share/certs/untrusted | sed 's@^@-@' ) | java -Xmx64m -jar /root/ca-certificates-java.jar -storepass 'changeit'
-              break
-            fi
-          done
-          for jre in $(ls -d /usr/local/openjdk*); do
-            [ -d "$jre/jre" ] && jre="$jre/jre"
-            if [ ! -L "$jre/lib/security/cacerts" ]; then
-              echo "$jre/lib/security/cacerts -> /etc/ssl/certs/java/cacerts"
-              mv $jre/lib/security/cacerts $jre/lib/security/cacerts.orig
-              ln -s /etc/ssl/certs/java/cacerts $jre/lib/security/cacerts
-            fi
-          done
-        mode: '0750'
-    - name: run post-upgrade.sh
-      command: /root/post-upgrade.sh
-  when: x509_ca_path | default(False)
-
 - name: tomcat group
   group:
     name: '{{ tomcat_group }}'

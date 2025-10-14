@@ -11,6 +11,12 @@
   include_tasks: '{{ ansible_os_family }}.yml'
   tags: tomcat, pkg
 
+# x509 if needed
+- name: install x509 CA
+  include_role:
+    name: criecm.x509
+  when: x509_ca_file | default("") != ""
+
 # memcached if needed
 - name: enable memcached
   service:
