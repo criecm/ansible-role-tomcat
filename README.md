@@ -1,6 +1,6 @@
 # tomcat
 
-FreeBSD & Debian, tomcat 8/9, jdk8, memcache sessions, remoteipvalve support
+FreeBSD & Debian, tomcat 8+, jdk8+, memcache sessions, remoteipvalve support
 
 ## variables (default value)
 

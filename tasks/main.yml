@@ -183,7 +183,7 @@
 
 - name: fact done
   blockinfile:
-    path: '{{ etcprefix }}/etc/ansible/facts.d/criecm.fact'
+    path: '{% if ansible_os_family == "FreeBSD" %}/usr/local{% endif %}/etc/ansible/facts.d/criecm.fact'
     marker: '# {mark} ANSIBLE criecm.tomcat BLOCK'
     block: |
       [tomcat]

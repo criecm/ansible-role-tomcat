@@ -6,21 +6,20 @@ galaxy_info:
 
   license: BSD
 
-  min_ansible_version: 2.5
+  min_ansible_version: 2.9
 
   platforms:
     - name: FreeBSD
       versions:
-        - 11.2
-        - 11.1
-        - 10.4
+        - all
     - name: Debian
       versions:
-        - stretch
+        - bullseye
+        - trixie
 
   galaxy_tags:
     - tomcat
 
 dependencies:
-  - role: criecm.common
+  - role: criecm.x509
 
