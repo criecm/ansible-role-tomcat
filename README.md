@@ -1,6 +1,6 @@
 # tomcat
 
-FreeBSD & Debian, tomcat 8+, jdk8+, memcache sessions, remoteipvalve support
+FreeBSD & Debian, tomcat 8+, jdk8+, memcache sessions (tomcat < 11), remoteipvalve support
 
 ## variables (default value)
 
@@ -57,7 +57,7 @@ FreeBSD & Debian, tomcat 8+, jdk8+, memcache sessions, remoteipvalve support
 
 ### memcache sessions
 
-if `memcached_nodes` is not empty:
+if `memcached_nodes` is not empty AND `tomcat_version` < 11:
 
 Session are replicated between memcache instances on each tomcat host 
 Using https://github.com/magro/memcached-session-manager/wiki

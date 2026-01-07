@@ -7,6 +7,10 @@
   set_fact:
     do_sys: '{% if "criecm" in ansible_local and "tomcat" in ansible_local.criecm and ansible_local.criecm.tomcat.version | default(0) | int >= tomcat_role_version and not do_sysadm | default(False) %}no{% else %}yes{% endif %}'
 
+- name: memcache_or_not
+  set_fact:
+    tomcat_memcache: '{% if tomcat_version | regex_replace("\.[0-9]+$","") < 11 and memcached_nodes != "" %}True{% else %}False{% endif %}'
+
 - name: OS tasks
   include_tasks: '{{ ansible_os_family }}.yml'
   tags: tomcat, pkg
@@ -16,14 +20,6 @@
   include_role:
     name: criecm.x509
   when: x509_ca_file | default("") != ""
-
-# memcached if needed
-- name: enable memcached
-  service:
-    name: memcached
-    state: started
-    enabled: yes
-  when: memcached_nodes is search(ansible_hostname | regex_replace("-","") ) or memcached_nodes is search("localhost")
 
 # keystore
 - name: copy keystore
@@ -53,56 +49,64 @@
     - '{{ tomcat_apr_key }}'
   when: tomcat_apr_cert != "" and tomcat_apr_key != ""
 
-# configs
-- name: memcache jars
-  command: "ls {{ tomcat_lib_dir }}/*memcache*"
-  check_mode: False
-  changed_when: False
-  failed_when: False
-  register: libjars
-
-- name: get memcache jars
-  get_url:
-    url: '{{ item }}'
-    dest: '{{ tomcat_lib_dir }}/{{ item | regex_replace(".*/","") }}'
-  with_items:
-    - 'https://repo1.maven.org/maven2/de/javakaffee/msm/memcached-session-manager/{{ memcached_session_manager_version }}/memcached-session-manager-{{ memcached_session_manager_version }}.jar'
-    - 'https://repo1.maven.org/maven2/de/javakaffee/msm/memcached-session-manager-tc{{ tomcat_version | regex_replace("\..*$","") }}/{{ memcached_session_manager_version }}/memcached-session-manager-tc{{ tomcat_version | regex_replace("\..*$","") }}-{{ memcached_session_manager_version }}.jar'
-    - 'https://repo1.maven.org/maven2/net/spy/spymemcached/{{ spymemcached_version }}/spymemcached-{{ spymemcached_version }}.jar'
-  when: memcached_nodes != ""
-  tags: tomcat, config
-
-- name: clean old jars
+- name: memcached sessions
   block:
-    - name: spymemcached
-      file:
-        path: '{{ item }}'
-        state: absent
-      loop: '{{ libjars.stdout_lines | map("regex_search","spymemcached-") | list
-        | map("regex_search","^spymemcached-(?!"+spymemcached_version+")") | list }}'
-    - name: memcached-session-manager-tc
-      file:
-        path: '{{ item }}'
-        state: absent
-      loop: '{{ libjars.stdout_lines | map("regex_search","memcached-session-manager-tc-") | list
-        | map("regex_search","^memcached-session-manager-tc-(?!"+memcached_session_manager_version+")") | list }}'
-    - name: memcached-session-manager
-      file:
-        path: '{{ item }}'
-        state: absent
-      loop: '{{ libjars.stdout_lines | map("regex_search","memcached-session-manager-[0-9]") | list
-        | map("regex_search","^memcached-session-manager-(?!"+memcached_session_manager_version+")") | list }}'
-  when: memcached_nodes != ""
+    - name: enable memcached
+      service:
+        name: memcached
+        state: started
+        enabled: yes
+      when: tomcat_memcache and memcached_nodes is search(ansible_hostname | regex_replace("-","") ) or memcached_nodes is search("localhost")
+    - name: memcache jars
+      command: "ls {{ tomcat_lib_dir }}/*memcache*"
+      check_mode: False
+      changed_when: False
+      failed_when: False
+      register: libjars
 
-- name: config context.xml / Manager element
-  template:
-    src: context.xml.j2
-    dest: '{{ tomcat_config_dir }}/context.xml'
-    owner: root
-    group: '{{ tomcat_group }}'
-    mode: '0640'
-  notify: restart tomcat
-  tags: tomcat, config
+    - name: get memcache jars
+      get_url:
+        url: '{{ item }}'
+        dest: '{{ tomcat_lib_dir }}/{{ item | regex_replace(".*/","") }}'
+      with_items:
+        - 'https://repo1.maven.org/maven2/de/javakaffee/msm/memcached-session-manager/{{ memcached_session_manager_version }}/memcached-session-manager-{{ memcached_session_manager_version }}.jar'
+        - 'https://repo1.maven.org/maven2/de/javakaffee/msm/memcached-session-manager-tc{{ tomcat_version | regex_replace("\..*$","") }}/{{ memcached_session_manager_version }}/memcached-session-manager-tc{{ tomcat_version | regex_replace("\..*$","") }}-{{ memcached_session_manager_version }}.jar'
+        - 'https://repo1.maven.org/maven2/net/spy/spymemcached/{{ spymemcached_version }}/spymemcached-{{ spymemcached_version }}.jar'
+      when: memcached_nodes != ""
+      tags: tomcat, config
+
+    - name: clean old jars
+      block:
+        - name: spymemcached
+          file:
+            path: '{{ item }}'
+            state: absent
+          loop: '{{ libjars.stdout_lines | map("regex_search","spymemcached-") | list
+            | map("regex_search","^spymemcached-(?!"+spymemcached_version+")") | list }}'
+        - name: memcached-session-manager-tc
+          file:
+            path: '{{ item }}'
+            state: absent
+          loop: '{{ libjars.stdout_lines | map("regex_search","memcached-session-manager-tc-") | list
+            | map("regex_search","^memcached-session-manager-tc-(?!"+memcached_session_manager_version+")") | list }}'
+        - name: memcached-session-manager
+          file:
+            path: '{{ item }}'
+            state: absent
+          loop: '{{ libjars.stdout_lines | map("regex_search","memcached-session-manager-[0-9]") | list
+            | map("regex_search","^memcached-session-manager-(?!"+memcached_session_manager_version+")") | list }}'
+      when: memcached_nodes != ""
+
+    - name: config context.xml / Manager element
+      template:
+        src: context.xml.j2
+        dest: '{{ tomcat_config_dir }}/context.xml'
+        owner: root
+        group: '{{ tomcat_group }}'
+        mode: '0640'
+      notify: restart tomcat
+      tags: tomcat, config
+  when: tomcat_memcache
 
 - name: config server.xml
   template:

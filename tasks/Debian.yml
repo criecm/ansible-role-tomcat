@@ -13,7 +13,7 @@
   apt:
     name: memcached
     state: present
-  when: memcached_nodes is search(ansible_hostname) or memcached_nodes is search("localhost")
+  when: tomcat_memcache and memcached_nodes is search(ansible_hostname) or memcached_nodes is search("localhost")
 
 - name: mkdir
   file:
