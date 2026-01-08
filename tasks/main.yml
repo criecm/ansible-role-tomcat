@@ -9,7 +9,7 @@
 
 - name: memcache_or_not
   set_fact:
-    tomcat_memcache: '{% if (tomcat_version | regex_replace("\.[0-9]+$","") | int) < 11 and memcached_nodes != "" %}True{% else %}False{% endif %}'
+    tomcat_memcache: '{% if tomcat_version is version("11.0", "<") and memcached_nodes != "" %}True{% else %}False{% endif %}'
 
 - name: OS tasks
   include_tasks: '{{ ansible_os_family }}.yml'
