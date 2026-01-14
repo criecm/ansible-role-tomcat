@@ -4,8 +4,6 @@
   apt:
     name:
       - tomcat{{ tomcat_version | regex_replace("\.0?","") }}
-      - '{{ debian_jdk_pkg }}'
-      - default-jre
       - libtcnative-1
     state: present
 
@@ -55,8 +53,6 @@
       if tomcat_lang_opts %} {{ tomcat_lang_opts }}{%
       endif %}{%
       if tomcat_java_opts %} {{ tomcat_java_opts }}{%
-      endif %}{%
-      if ansible_all_ipv6_addresses | count() > 0 %} -Djava.net.preferIPv4Stack=false -Djava.net.preferIPv6Addresses=true{%
       endif %}{%
       if tomcat_keystore != '' %} -Djavax.net.ssl.trustStore=/etc/ssl/{{ tomcat_keystore | regex_replace('.*/','') }} -Djavax.net.ssl.trustStorePassword='{{ tomcat_storepass }}'{%
       endif %}{%

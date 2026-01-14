@@ -11,15 +11,16 @@
   set_fact:
     tomcat_memcache: '{% if tomcat_version is version("11.0", "<") and memcached_nodes != "" %}True{% else %}False{% endif %}'
 
+- name: install java
+  include_role:
+    name: criecm.jvm
+  vars:
+    jvm_java_version: '{{ tomcat_java_version }}'
+    jvm_set_default: False
+
 - name: OS tasks
   include_tasks: '{{ ansible_os_family }}.yml'
   tags: tomcat, pkg
-
-# x509 if needed
-- name: install x509 CA
-  include_role:
-    name: criecm.x509
-  when: x509_ca_file | default("") != ""
 
 # keystore
 - name: copy keystore
