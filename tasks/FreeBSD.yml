@@ -3,7 +3,7 @@
 - name: install java & tomcat
   pkgng:
     name:
-      - tomcat{{ tomcat_version | regex_replace((tomcat_version is version("10.0", "<") | ternary("\.0?", "\.")),"") }}
+      - 'tomcat{{ tomcat_version | regex_replace((tomcat_version is version("10.0", "<") | ternary("\.0?", "\.")),"") }}'
       - tomcat-native
     state: present
 
