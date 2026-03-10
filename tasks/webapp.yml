@@ -80,7 +80,7 @@
 - name: show deploy time
   debug:
     msg: "webapp {{ webapp.name }} deployed in {{ waitfor['match_groupdict']['secs'] }} ms"
-  when: tomcat_running
+  when: tomcat_running and not ansible_check_mode | bool
 
 - name: '{{ webapp.name }}: webapp script'
   command: '{{ webapp.gitdst }}/{{ webapp.script }}'
