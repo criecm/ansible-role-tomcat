@@ -148,7 +148,7 @@
 - name: force stop tomcat if needed
   command: 'pkill -u {{ tomcat_user }} {{ tomcat_process }}'
   failed_when: false
-  changed_when: '{% if forcestop.rc == 0 %}true{% else %}false{% endif %}'
+  changed_when: '{% forcestop.rc == 0 %}'
   register: forcestop
   when: tomcat_forced_deploy
 
@@ -161,7 +161,7 @@
 
 - name: set tomcat status fact
   set_fact:
-    tomcat_running: '{% if service_apache_status.failed %}false{% else %}true{% endif %}'
+    tomcat_running: '{% if service_apache_status.failed %}{{ false }}{% else %}{{ true }}{% endif %}'
 
 - name: logrotate forced
   command: 'logrotate -f /etc/logrotate.d/tomcat{{ tomcat_version | regex_replace("\.0?","") }}'
