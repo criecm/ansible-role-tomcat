@@ -40,7 +40,7 @@
 {%   endif %}
         />
 {% endif %}
-        <Engine name="Catalina" defaultHost="localhost" jvmRoute="{{ ansible_hostname }}">
+        <Engine name="Catalina" defaultHost="localhost" jvmRoute="{{ ansible_facts["hostname"] }}">
             <Realm className="org.apache.catalina.realm.LockOutRealm">
                 <Realm className="org.apache.catalina.realm.UserDatabaseRealm" resourceName="UserDatabase"/>
             </Realm>

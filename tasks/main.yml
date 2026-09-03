@@ -1,6 +1,6 @@
 ---
 - name: OS vars
-  include_vars: '{{ ansible_os_family }}.yml'
+  include_vars: '{{ ansible_facts["os_family"] }}.yml'
   tags: tomcat, vars
 
 - name: do_sys or not
@@ -19,7 +19,7 @@
     jvm_set_default: False
 
 - name: OS tasks
-  include_tasks: '{{ ansible_os_family }}.yml'
+  include_tasks: '{{ ansible_facts["os_family"] }}.yml'
   tags: tomcat, pkg
 
 # keystore
@@ -57,7 +57,7 @@
         name: memcached
         state: started
         enabled: yes
-      when: tomcat_memcache and memcached_nodes is search(ansible_hostname | regex_replace("-","") ) or memcached_nodes is search("localhost")
+      when: tomcat_memcache and memcached_nodes is search(ansible_facts["hostname"] | regex_replace("-","") ) or memcached_nodes is search("localhost")
     - name: memcache jars
       command: "ls {{ tomcat_lib_dir }}/*memcache*"
       check_mode: False
@@ -165,11 +165,11 @@
 
 - name: logrotate forced
   command: 'logrotate -f /etc/logrotate.d/tomcat{{ tomcat_version | regex_replace("\.0?","") }}'
-  when: ansible_os_family == "Debian"
+  when: ansible_facts["os_family"] == "Debian"
 
 - name: newsyslog forced
   command: newsyslog -F -f /usr/local/etc/newsyslog.conf.d/tomcat.conf
-  when: ansible_os_family == "FreeBSD"
+  when: ansible_facts["os_family"] == "FreeBSD"
 
 - name: deploy tomcat_webapps
   include_tasks: webapp.yml
@@ -188,7 +188,7 @@
 
 - name: fact done
   blockinfile:
-    path: '{% if ansible_os_family == "FreeBSD" %}/usr/local{% endif %}/etc/ansible/facts.d/criecm.fact'
+    path: '{% if ansible_facts["os_family"] == "FreeBSD" %}/usr/local{% endif %}/etc/ansible/facts.d/criecm.fact'
     marker: '# {mark} ANSIBLE criecm.tomcat BLOCK'
     block: |
       [tomcat]
